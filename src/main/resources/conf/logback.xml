@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+1. 所有的日志文件都默认放在项目根目录logs目录下(logs目录会自动创建)
+-->
+<configuration>
+    <!-- [BEGIN]各项目自定义部分 ===============================================================-->
+    <!-- 1. 属性配置 -->
+    <!-- 1.1 当前项目属性配置 -->
+    <property name="logfile.dir" value="logs" />
+    <property name="logfile.name" value="app"/>
+    <property name="max.save.day" value="30"/>
+    <property name="max.single.file.size" value="500MB"/>
+    <property name="all.appender.log.level" value="INFO"/>
+    <!--
+    %d : 全时间, 例如:2017-09-28 15:16:22,580
+    %p : 日志级别, 例如:INFO
+    %t : 线程名, 例如:thread-1
+    %C.%M:%L : 全类名.方法名:行号
+    -->
+    <property name="log.pattern" value="[%date{yyyy-MM-dd HH:mm:ss.SSS}][%level][%thread][%logger{80}|%line]%msg%n"/>
+    <!-- [END]各项目自定义部分 ===============================================================-->
+
+    <!-- 2. Appender配置 -->
+    <!-- 2.1 全量业务日志, 按照时间或大小成日志文件 -->
+    <appender name="ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前日志输出文件-->
+        <File>${logfile.dir}/all/${logfile.name}.log</File>
+        <!-- 日志格式与编码格式 -->
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+
+        <!-- 当日期或大小满足设定标准后, 进行归档 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- %i表示第几份文件, 按文件大小归档每天可能会有多份文件, 用%i表示即可 -->
+            <!-- .zip 结尾, logback会自动执行压缩 -->
+            <FileNamePattern>${logfile.dir}/all/${logfile.name}.log_%d{yyyy-MM-dd}_%i.zip</FileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>${max.save.day}</MaxHistory>
+            <!-- 文件大小超过阈值时进行归档(与日期是或的关系), 可以识别KB, MB, GB -->
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>${max.single.file.size}</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 2.2 ERROR级别日志单独打印 -->
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前日志输出文件 -->
+        <File>${logfile.dir}/error/${logfile.name}-error.log</File>
+        <!-- 日志格式与编码格式 -->
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 过滤器,只打印ERROR级别日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <!-- 当日期或大小满足设定标准后, 进行归档 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- %i表示第几份文件, 按文件大小归档每天可能会有多份文件, 用%i表示即可 -->
+            <FileNamePattern>${logfile.dir}/error/${logfile.name}-error.log_%d{yyyy-MM-dd}_%i.zip</FileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>${max.save.day}</MaxHistory>
+            <!-- 文件大小超过阈值时进行归档(与日期是或的关系), 可以识别KB, MB, GB -->
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>${max.single.file.size}</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 2.3 控制台打印, 开发时快速查看 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 3. logger 配置 -->
+    <!-- 3.1 默认root logger, 输出的日志级别在property中配置 -->
+    <root level="${all.appender.log.level}">
+        <appender-ref ref="ALL"/>
+        <appender-ref ref="ERROR"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
