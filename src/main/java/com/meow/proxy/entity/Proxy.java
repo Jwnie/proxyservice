@@ -64,6 +64,10 @@ public class Proxy {
      * 代理采集时间
      */
     private Long crawlTime;
+    /**
+     * 代理响应时间
+     */
+    private Long responseTime;
 
     public String getIp() {
         return ip;
@@ -184,7 +188,15 @@ public class Proxy {
     public void setCrawlTime(Long crawlTime) {
         this.crawlTime = crawlTime;
     }
-
+    
+    public Long getResponseTime() {
+        return responseTime;
+    }
+    
+    public void setResponseTime(Long responseTime) {
+        this.responseTime = responseTime;
+    }
+    
     @Override
     public String toString() {
         return JSONObject.toJSONString(this);

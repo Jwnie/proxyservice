@@ -13,7 +13,23 @@ public enum ProxyProtocolType {
 
     private int key;
     private String requestType;
-
+    
+    public int getKey() {
+        return key;
+    }
+    
+    public void setKey(int key) {
+        this.key = key;
+    }
+    
+    public String getRequestType() {
+        return requestType;
+    }
+    
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+    
     ProxyProtocolType(int key, String requestType) {
         this.key = key;
         this.requestType = requestType;
