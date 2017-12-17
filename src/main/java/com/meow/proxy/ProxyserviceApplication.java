@@ -4,10 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author alex
  */
+@EnableScheduling
 @SpringBootApplication
 public class ProxyserviceApplication {
 	private final static Logger LOG = LoggerFactory.getLogger(ProxyserviceApplication.class);

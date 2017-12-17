@@ -80,4 +80,13 @@ public class Task {
     public String toString() {
         return JSONObject.toJSONString(this);
     }
+    
+    public Task(String url, boolean subPageCrawl, int subPageSize, String downLoadClassPath, String extractClassPath, String siteName) {
+        this.url = url;
+        this.subPageCrawl = subPageCrawl;
+        this.subPageSize = subPageSize;
+        this.downLoadClassPath = downLoadClassPath;
+        this.extractClassPath = extractClassPath;
+        this.siteName = siteName;
+    }
 }
