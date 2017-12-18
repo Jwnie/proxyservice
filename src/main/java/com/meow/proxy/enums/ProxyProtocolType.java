@@ -9,7 +9,9 @@ public enum ProxyProtocolType {
     http(1, "http"),
     https(2, "https"),
     socks4(3, "socks4"),
-    socks5(4, "socks5");
+    socks5(4, "socks5"),
+    //不区分socks4或5
+    socks(5, "socks");
 
     private int key;
     private String requestType;

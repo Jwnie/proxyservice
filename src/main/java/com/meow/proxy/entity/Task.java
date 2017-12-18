@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
  *         date:2017/12/15
  *         email:jwnie@foxmail.com
  */
-@Component
 public class Task {
     /**
      * 任務url

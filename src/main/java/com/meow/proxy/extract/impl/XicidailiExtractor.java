@@ -27,84 +27,89 @@ import java.util.List;
  */
 @Component
 public class XicidailiExtractor implements Extractor {
-	private final static Logger LOG = LoggerFactory.getLogger(XicidailiExtractor.class);
-	
-	@Override
-	public List<Proxy> extract(String htmlContent) {
-		List<Proxy> proxies = new ArrayList<Proxy>(100);
-		Document document = Jsoup.parse(htmlContent);
-		ProxyCheck proxyCheck = ProxyCheck.getInstance();
-		if (document != null) {
-			Elements elements = document.select("tr.odd");
-			if (CollectionUtils.isNotEmpty(elements)) {
-				for (Element element : elements) {
-					long beginTime = System.currentTimeMillis();
-					Element ipEle = element.getElementsByClass("country").first();
-					if (ipEle != null) {
-						Element portELe = ipEle.nextElementSibling();
-						String ip = ipEle.text();
-						int port = Integer.parseInt(portELe.text());
-						boolean valid = proxyCheck.checkProxyBySocket(new HttpHost(ip, port));
-						if (valid) {
-							long end = System.currentTimeMillis();
-							Element areaEle = portELe.nextElementSibling();
-							Element anonymousEle = areaEle.nextElementSibling();
-							Element protocolEle = anonymousEle.nextElementSibling();
-							
-							Proxy proxy = new Proxy();
-							proxy.setCountry(CountryType.china.getCountryName());
-							proxy.setIp(ip);
-							proxy.setPort(port);
-							proxy.setArea(areaEle.text());
-							proxy.setCheckStatus(1);
-							proxy.setAnonymousType(getAnonymousType(anonymousEle));
-							proxy.setProtocolType(protocolEle.text());
-							proxy.setSourceSite(ProxySite.xicidaili.getProxySiteName());
-							proxy.setCheckTime(beginTime);
-							proxy.setCrawlTime(beginTime);
-							proxy.setValid(true);
-							proxy.setResponseTime(end - beginTime);
-							LOG.info("Valid proxy:" + proxy.toString());
-							proxies.add(proxy);
-						}
-					} else {
-						LOG.warn("XicidailiExtractor can not extract anything..., please check.");
-					}
-				}
-			}
-		}
-		return proxies;
-	}
-	
-	@Override
-	public List<Proxy> extract(List<String> htmlContentList) {
-		List<Proxy> proxies = new ArrayList<Proxy>(200);
-		if (CollectionUtils.isNotEmpty(htmlContentList)) {
-			for (String htmlContent : htmlContentList) {
-				proxies.addAll(extract(htmlContent));
-			}
-		}
-		return proxies;
-	}
-	
-	/**
-	 * 代理匿名类型清洗
-	 *
-	 * @param element
-	 * @return
-	 */
-	private String getAnonymousType(Element element) {
-		String text = element.text();
-		if (StringUtils.isNoneBlank(text)) {
-			switch (text) {
-				case "高匿":
-					return ProxyAnonymousType.elite.getAnonymousType();
-				case "透明":
-					return ProxyAnonymousType.transparent.getAnonymousType();
-				default:
-					LOG.warn("Can not verify the anonymousType of proxy from XiciDaili>>>:" + text);
-			}
-		}
-		return text;
-	}
+    private final static Logger LOG = LoggerFactory.getLogger(XicidailiExtractor.class);
+
+    @Override
+    public List<Proxy> extract(String htmlContent) {
+        List<Proxy> proxies = new ArrayList<Proxy>(100);
+        Document document = Jsoup.parse(htmlContent);
+        ProxyCheck proxyCheck = ProxyCheck.getInstance();
+        if (document != null) {
+            Elements elements = document.select("tr.odd");
+            if (CollectionUtils.isNotEmpty(elements)) {
+//				int i = 0 ;
+                for (Element element : elements) {
+                    /*i++;
+					if(i/5 != 0){
+						continue;
+					}*/
+                    long beginTime = System.currentTimeMillis();
+                    Element ipEle = element.getElementsByClass("country").first().nextElementSibling();
+                    if (ipEle != null) {
+                        Element portELe = ipEle.nextElementSibling();
+                        String ip = ipEle.text();
+                        int port = Integer.parseInt(portELe.text());
+                        boolean valid = proxyCheck.checkProxyBySocket(new HttpHost(ip, port));
+                        if (valid) {
+                            long end = System.currentTimeMillis();
+                            Element areaEle = portELe.nextElementSibling();
+                            Element anonymousEle = areaEle.nextElementSibling();
+                            Element protocolEle = anonymousEle.nextElementSibling();
+
+                            Proxy proxy = new Proxy();
+                            proxy.setCountry(CountryType.china.getCountryName());
+                            proxy.setIp(ip);
+                            proxy.setPort(port);
+                            proxy.setArea(areaEle.text());
+                            proxy.setCheckStatus(1);
+                            proxy.setAnonymousType(getAnonymousType(anonymousEle));
+                            proxy.setProtocolType(protocolEle.text());
+                            proxy.setSourceSite(ProxySite.xicidaili.getProxySiteName());
+                            proxy.setCheckTime(beginTime);
+                            proxy.setCrawlTime(beginTime);
+                            proxy.setValid(true);
+                            proxy.setResponseTime(end - beginTime);
+                            LOG.info("Valid proxy:" + proxy.toString());
+                            proxies.add(proxy);
+                        }
+                    } else {
+                        LOG.warn("XicidailiExtractor can not extract anything..., please check.");
+                    }
+                }
+            }
+        }
+        return proxies;
+    }
+
+    @Override
+    public List<Proxy> extract(List<String> htmlContentList) {
+        List<Proxy> proxies = new ArrayList<Proxy>(200);
+        if (CollectionUtils.isNotEmpty(htmlContentList)) {
+            for (String htmlContent : htmlContentList) {
+                proxies.addAll(extract(htmlContent));
+            }
+        }
+        return proxies;
+    }
+
+    /**
+     * 代理匿名类型清洗
+     *
+     * @param element
+     * @return
+     */
+    private String getAnonymousType(Element element) {
+        String text = element.text();
+        if (StringUtils.isNoneBlank(text)) {
+            switch (text) {
+                case "高匿":
+                    return ProxyAnonymousType.elite.getAnonymousType();
+                case "透明":
+                    return ProxyAnonymousType.transparent.getAnonymousType();
+                default:
+                    LOG.warn("Can not verify the anonymousType of proxy from XiciDaili>>>:" + text);
+            }
+        }
+        return text;
+    }
 }

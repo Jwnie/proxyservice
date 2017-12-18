@@ -1,6 +1,7 @@
 package com.meow.proxy.entity;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sun.javafx.beans.IDProperty;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Proxy {
+    private Integer id;
     private String ip;
     private int port;
     /**
@@ -68,6 +70,14 @@ public class Proxy {
      * 代理响应时间
      */
     private Long responseTime;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getIp() {
         return ip;

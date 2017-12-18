@@ -38,6 +38,7 @@ public abstract class BaseDownLoader implements DownLoader {
         List<String> htmlContentList = new ArrayList<String>(20);
         try {
             if (task != null) {
+                closeableHttpClient = HttpClientUtil.getInstance().createHttpClient();
                 Request request = new Request();
                 setRequestParam(request);
                 String origUrl = task.getUrl();
@@ -49,7 +50,8 @@ public abstract class BaseDownLoader implements DownLoader {
         } catch (Exception e) {
             LOG.error("下载异常，任务url:" + task.getUrl(), e);
         } finally {
-            httpClientUtil.closeResources(null, closeableHttpClient);
+            //使用连接池无需关闭
+//            httpClientUtil.closeResources(null, closeableHttpClient);
         }
         return htmlContentList;
     }

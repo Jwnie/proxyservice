@@ -2,6 +2,7 @@ package com.meow.proxy.request;
 
 import com.google.common.io.ByteStreams;
 import com.meow.proxy.base.Const;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.CookieStore;
@@ -30,6 +31,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.security.KeyManagementException;
@@ -191,7 +193,8 @@ public class HttpClientUtil {
         }catch(Exception e){
             LOG.error("请求失败，url:"+url,e);
         }finally {
-            closeResources(closeableHttpResponse, null);
+            //使用连接池无需关闭
+            //closeResources(closeableHttpResponse, null);
         }
         return response;
     }
@@ -229,7 +232,8 @@ public class HttpClientUtil {
         }catch(Exception e){
             LOG.error("请求失败，url:"+url,e);
         }finally{
-            closeResources(closeableHttpResponse, null);
+            //使用连接池无需关闭
+            //closeResources(closeableHttpResponse, null);
         }
         return response;
     }
@@ -257,14 +261,22 @@ public class HttpClientUtil {
         // 获取返回数据
         HttpEntity entity = httpResponse.getEntity();
         Header header = entity.getContentEncoding();
-        if (header != null && Const.SYMBOL_ZIP.equals(header.getValue().toLowerCase())) {
-            byte[] bytes = ByteStreams.toByteArray(new GZIPInputStream(entity.getContent()));
-            String content = new String(bytes, charSet);
-            response.setContent(content);
-        } else {
-            byte[] bytes = EntityUtils.toByteArray(entity);
-            String content = new String(bytes, charSet);
-            response.setContent(content);
+        InputStream in = entity.getContent();
+        try{
+            if (header != null && Const.SYMBOL_ZIP.equals(header.getValue().toLowerCase())) {
+                byte[] bytes = ByteStreams.toByteArray(new GZIPInputStream(in));
+                String content = new String(bytes, charSet);
+                response.setContent(content);
+            } else {
+                byte[] bytes = EntityUtils.toByteArray(entity);
+                String content = new String(bytes, charSet);
+                response.setContent(content);
+            }
+        }catch(Exception e){
+            LOG.error("读取响应内容异常: ",e);
+        }finally{
+            //关闭流的作用就是将用完的连接释放，下次请求可以复用，如不使用in.close();而仅仅使用response.close();结果就是连接会被关闭，并且不能被复用，如此失去了采用连接池的意义。
+            IOUtils.closeQuietly(in);
         }
         return response;
     }

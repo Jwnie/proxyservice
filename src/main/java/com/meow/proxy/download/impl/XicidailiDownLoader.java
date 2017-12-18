@@ -36,30 +36,39 @@ public class XicidailiDownLoader extends BaseDownLoader implements DownLoader {
         HttpClientUtil httpClientUtil = HttpClientUtil.getInstance();
         CloseableHttpClient closeableHttpClient = null;
         List<String> htmlContentList = new ArrayList<String>(20);
-        if (task != null) {
-            String origUrl = task.getUrl();
-            Request request = new Request();
-            setRequestParam(request);
-            int pageSize = 1;
-            if (task.isSubPageCrawl()) {
-                pageSize = task.getSubPageSize() + 1;
+        try {
+            closeableHttpClient = HttpClientUtil.getInstance().createHttpClient();
+            if (task != null) {
+                String origUrl = task.getUrl();
+                Request request = new Request();
+                setRequestParam(request);
+                int pageSize = 1;
+                if (task.isSubPageCrawl()) {
+                    pageSize = task.getSubPageSize() + 1;
+                }
+                List<String> proxyUrlList = new ArrayList<>(pageSize * 2);
+                //代理url拼接
+                for (int i = 1; i <= pageSize; i++) {
+                    //国内高匿代理
+                    proxyUrlList.add("http://www.xicidaili.com/nn/" + i);
+                    //国内透明代理
+                    proxyUrlList.add("http://www.xicidaili.com/nt/" + i);
+                    //HTTPS代理
+                    proxyUrlList.add("http://www.xicidaili.com/wn/" + i);
+                    //HTTP代理
+                    proxyUrlList.add("http://www.xicidaili.com/wt/" + i);
+                }
+                if (CollectionUtils.isNotEmpty(proxyUrlList)) {
+                    htmlContentList.addAll(downLoad(httpClientUtil, closeableHttpClient, request, proxyUrlList));
+                }
             }
-            List<String> proxyUrlList = new ArrayList<>(pageSize * 2);
-            //代理url拼接
-            for (int i = 1; i <= pageSize; i++) {
-                //国内高匿代理
-                proxyUrlList.add("http://www.xicidaili.com/nn/" + i);
-                //国内透明代理
-                proxyUrlList.add("http://www.xicidaili.com/nt/" + i);
-                //HTTPS代理
-                proxyUrlList.add("http://www.xicidaili.com/wn/" + i);
-                //HTTP代理
-                proxyUrlList.add("http://www.xicidaili.com/wt/" + i);
-            }
-            if (CollectionUtils.isNotEmpty(proxyUrlList)) {
-                htmlContentList.addAll(downLoad(httpClientUtil, closeableHttpClient, request, proxyUrlList));
-            }
+        } catch (Exception e) {
+            LOG.error("", e);
+        } finally {
+            //使用连接池无需关闭
+            //httpClientUtil.closeResources(null, closeableHttpClient);
         }
+
         return htmlContentList;
     }
 
