@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.meow.proxy.dao.ProxyDao">
+
+    <!-- insert -->
+    <!--保存代理，使用ip和port作为主键避免重复插入-->
+    <insert id="saveProxies" parameterType="java.util.List">
+        INSERT IGNORE INTO `Cfg_Proxy`
+        (`ip`,`PORT`,`anonymousType`,`protocolType`,`country`,`AREA`,`valid`,`invalidTime`,`lastSurviveTime`,`checkTime`,`checkStatus`,`score`,`sourceSite`,`validTime`,`crawlTime`,`responseTime`)
+        VALUES
+        <foreach collection="list" item="proxy" index="index" separator=",">
+            (#{proxy.ip},#{proxy.port},#{proxy.anonymousType},#{proxy.protocolType},#{proxy.country},#{proxy.area},#{proxy.valid},#{proxy.invalidTime},#{proxy.lastSurviveTime},#{proxy.checkTime},#{proxy.checkStatus},#{proxy.score},#{proxy.sourceSite},#{proxy.validTime},#{proxy.crawlTime},#{proxy.responseTime})
+        </foreach>
+    </insert>
+
+
+    <!-- query -->
+    <select id="getNextVal" resultType="int">
+        SELECT nextval("seq_cfg_proxy")
+    </select>
+    <!-- update -->
+
+    <!-- delete -->
+
+
+</mapper>
