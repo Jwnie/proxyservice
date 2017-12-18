@@ -13,7 +13,23 @@ public enum ProxyAnonymousType {
 
     private int anonymousKey;
     private String anonymousType;
-
+    
+    public int getAnonymousKey() {
+        return anonymousKey;
+    }
+    
+    public void setAnonymousKey(int anonymousKey) {
+        this.anonymousKey = anonymousKey;
+    }
+    
+    public String getAnonymousType() {
+        return anonymousType;
+    }
+    
+    public void setAnonymousType(String anonymousType) {
+        this.anonymousType = anonymousType;
+    }
+    
     ProxyAnonymousType(int anonymousKey, String anonymousType) {
         this.anonymousKey = anonymousKey;
         this.anonymousType = anonymousType;
