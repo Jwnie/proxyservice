@@ -1,5 +1,8 @@
 package com.meow.proxy.jobs;
 
+import com.meow.proxy.base.Const;
+import com.meow.proxy.check.ProxyRecheckHandler;
+import com.meow.proxy.check.ProxyRecheckSender;
 import com.meow.proxy.configure.TaskHolder;
 import com.meow.proxy.crawl.ProxyCrawl;
 import com.meow.proxy.entity.Proxy;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
+ * @Scheduled的方法现在为并行执行
  * Created by Jwnie on 2017/12/17.
  */
 @Component
@@ -24,6 +28,8 @@ public class ScheduleJobs {
     ProxyCrawl proxyCrawl;
     @Autowired
     ProxyService proxyService;
+    @Autowired
+    ProxyRecheckSender proxyRecheckSender;
 
     @Scheduled(fixedRateString = "${com.meow.proxy.jobs.ScheduleJobs.proxyCrawl.period}")
     public void proxyCrawl() {
@@ -39,4 +45,14 @@ public class ScheduleJobs {
         }
     }
 
+    @Scheduled(fixedRateString = "${com.meow.proxy.jobs.ScheduleJobs.proxyRecheck.period}")
+    public void proxyRecheck() {
+        long begin = System.currentTimeMillis();
+        List<Proxy> proxyList = proxyService.queryValidProxies();
+        proxyRecheckSender.sendRecheckProxies(proxyList);
+        LOG.info("可用代理检测完成，用时: "+(System.currentTimeMillis() - begin)+" ms");
+    }
+
 }
+
+

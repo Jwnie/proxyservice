@@ -15,10 +15,47 @@
 
 
     <!-- query -->
-    <select id="getNextVal" resultType="int">
-        SELECT nextval("seq_cfg_proxy")
+    <!--查询所有有效的代理 -->
+    <select id="queryValidProxies" resultType="com.meow.proxy.entity.Proxy">
+            SELECT * FROM Cfg_Proxy WHERE valid = 1;
+        </select>
+
+    <!--查询响应时间最短的、最新的前一百条代理，参数可选-->
+    <select id="queryProxy" resultType="com.meow.proxy.entity.Proxy">
+        SELECT * FROM Cfg_Proxy WHERE valid = 1
+        <if test="anonymousType != null and anonymousType != '' ">
+            AND anonymousType = #{anonymousType, jdbcType=VARCHAR}
+        </if>
+        <if test="protocolType != null and protocolType != '' ">
+            AND protocolType = #{protocolType, jdbcType=VARCHAR}
+        </if>
+        <if test="isDemostic != null and isDemostic == 'true' ">
+            AND country = 'china'
+        </if>
+        <if test="isDemostic != null and isDemostic == 'false' ">
+            AND country != 'china'
+        </if>
+        ORDER BY responseTime ASC,checkTime DESC LIMIT 100;
     </select>
+
     <!-- update -->
+    <update id="updateProxies" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            UPDATE Cfg_Proxy
+            <set>
+                valid = #{item.valid},
+                invalidTime = #{item.invalidTime},
+                lastSurviveTime = #{item.lastSurviveTime},
+                checkTime = #{item.checkTime},
+                checkStatus = #{item.checkStatus},
+                score = #{item.score},
+                validTime = #{item.validTime},
+                responseTime = #{item.responseTime}
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
 
     <!-- delete -->
 

@@ -40,4 +40,6 @@ public class Const {
 
     public static String CHINESE_CHAR ="[\u4e00-\u9fa5]";
 
+    public static final int CPU_AVAILABLEPROCESSORS = Runtime.getRuntime().availableProcessors();
+
 }

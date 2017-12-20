@@ -49,7 +49,7 @@ public class XicidailiExtractor implements Extractor {
                         Element portELe = ipEle.nextElementSibling();
                         String ip = ipEle.text();
                         int port = Integer.parseInt(portELe.text());
-                        boolean valid = proxyCheck.checkProxyBySocket(new HttpHost(ip, port));
+                        boolean valid = proxyCheck.checkProxyBySocket(new HttpHost(ip, port),true);
                         if (valid) {
                             long end = System.currentTimeMillis();
                             Element areaEle = portELe.nextElementSibling();
@@ -67,6 +67,9 @@ public class XicidailiExtractor implements Extractor {
                             proxy.setSourceSite(ProxySite.xicidaili.getProxySiteName());
                             proxy.setCheckTime(beginTime);
                             proxy.setCrawlTime(beginTime);
+                            proxy.setValidTime(1);
+                            proxy.setLastSurviveTime(-1L);
+                            proxy.setInvalidTime(-1L);
                             proxy.setValid(true);
                             proxy.setResponseTime(end - beginTime);
                             LOG.info("Valid proxy:" + proxy.toString());

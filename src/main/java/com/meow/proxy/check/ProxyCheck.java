@@ -19,7 +19,7 @@ import java.net.Socket;
  */
 public class ProxyCheck {
     private final static Logger LOG = LoggerFactory.getLogger(ProxyCheck.class);
-    private final static int CHECKPROXY_TIMEOUT = 60000;
+    private final static int CHECKPROXY_TIMEOUT = 30000;
     /**
      * 使用布隆过滤器进行去重
      */
@@ -59,14 +59,19 @@ public class ProxyCheck {
      * @param proxy
      * @return
      */
-    public boolean checkProxyBySocket(HttpHost proxy) {
-        if (proxy == null || isHadCheck(proxy)) {
+    public boolean checkProxyBySocket(HttpHost proxy, boolean deduplicate) {
+        if (proxy == null) {
             return false;
+        }
+        if (deduplicate) {
+            if (isHadCheck(proxy)) {
+                return false;
+            }
         }
         Socket socket = null;
         try {
             //失败重试三次
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 2; i++) {
                 try {
                     socket = new Socket();
                     InetSocketAddress endpointSocketAddr = new InetSocketAddress(proxy.getHostName(), proxy.getPort());
@@ -74,7 +79,7 @@ public class ProxyCheck {
                     return true;
                 } catch (Exception e) {
                     LOG.error("连接失败, remote: " + proxy.getHostName() + ":" + proxy.getPort());
-                }finally {
+                } finally {
                     if (socket != null) {
                         try {
                             socket.close();
@@ -86,13 +91,20 @@ public class ProxyCheck {
             }
             return false;
         } finally {
-            addChecked(proxy);
+            if (deduplicate) {
+                addChecked(proxy);
+            }
         }
     }
 
-    public boolean checkProxyByRequestBaidu(HttpHost proxy) {
-        if (proxy == null || isHadCheck(proxy)) {
+    public boolean checkProxyByRequestBaidu(HttpHost proxy, boolean deduplicate) {
+        if (proxy == null) {
             return false;
+        }
+        if (deduplicate) {
+            if (isHadCheck(proxy)) {
+                return false;
+            }
         }
         String url = "https://www.baidu.com/";
         CloseableHttpClient closeableHttpClient = null;
@@ -112,7 +124,9 @@ public class ProxyCheck {
             LOG.error("验证代理请求出错：", e);
             return false;
         } finally {
-            addChecked(proxy);
+            if (deduplicate) {
+                addChecked(proxy);
+            }
             //使用连接池无需关闭
             //httpClientUtil.closeResources(null,closeableHttpClient);
         }

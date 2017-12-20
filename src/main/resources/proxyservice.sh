@@ -53,7 +53,8 @@ stop()
 	APP_PIDS=`ps -ef --width 4096|grep $PROGRAM |grep -v grep |awk '{print $2}'`
 	for LOOP in $APP_PIDS
 	do
-		kill -9 $LOOP
+		#kill -9 $LOOP
+		kill  $LOOP
 	done
 }
 

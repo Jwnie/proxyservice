@@ -14,17 +14,17 @@ import java.util.List;
  */
 public class TaskHolder {
 	private static TaskHolder ourInstance = new TaskHolder();
-	
+
 	public static TaskHolder getInstance() {
 		return ourInstance;
 	}
-	
+
 	private List<Task> taskList = new ArrayList<>(50);
-	
+
 	private TaskHolder() {
 		taskList.add(new Task("http://www.xicidaili.com/",false,4,XicidailiDownLoader.class.getCanonicalName(), XicidailiExtractor.class.getCanonicalName(), ProxySite.xicidaili.getProxySiteName()));
 	}
-	
+
 	public List<Task> getTaskList() {
 		return taskList;
 	}
