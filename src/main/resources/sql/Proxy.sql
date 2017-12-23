@@ -3,7 +3,7 @@ drop table if exists Cfg_Proxy;
 
 create table Cfg_Proxy
 (
-   id                   int not null AUTO_INCREMENT comment '代理自增ID',
+   id                   int not null comment '代理自增ID',
    ip                   varchar(20) not null comment '使用ip和port作为主键避免重复插入',
    port                 int not null comment '使用ip和port作为主键避免重复插入',
    anonymousType        varchar(20) not null comment 'transparent、anonymous、distorting、elite',

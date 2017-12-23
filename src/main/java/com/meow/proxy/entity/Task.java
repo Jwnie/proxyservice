@@ -25,67 +25,68 @@ public class Task {
     /**
      * 下載類class路徑
      */
-    private String downLoadClassPath;
+    private String downLoadClassName;
     /**
      * 抽取类class路径
      */
-    private String extractClassPath;
+    private String extractClassName;
     /**
      * 站点名称
      */
     private String siteName;
-
-    public String getUrl() {
-        return url;
+    
+    public String getUrl()
+    {
+        return this.url;
     }
-
+    
     public void setUrl(String url) {
         this.url = url;
     }
-
+    
     public boolean isSubPageCrawl() {
-        return subPageCrawl;
+        return this.subPageCrawl;
     }
-
+    
     public void setSubPageCrawl(boolean subPageCrawl) {
         this.subPageCrawl = subPageCrawl;
     }
-
+    
     public int getSubPageSize() {
-        return subPageSize;
+        return this.subPageSize;
     }
-
+    
     public void setSubPageSize(int subPageSize) {
         this.subPageSize = subPageSize;
     }
-
-    public String getDownLoadClassPath() {
-        return downLoadClassPath;
+    
+    public String getDownLoadClassName() {
+        return this.downLoadClassName;
     }
-
-    public void setDownLoadClassPath(String downLoadClassPath) {
-        this.downLoadClassPath = downLoadClassPath;
+    
+    public void setDownLoadClassName(String downLoadClassName) {
+        this.downLoadClassName = downLoadClassName;
     }
-
-    public String getExtractClassPath() {
-        return extractClassPath;
+    
+    public String getExtractClassName() {
+        return this.extractClassName;
     }
-
-    public void setExtractClassPath(String extractClassPath) {
-        this.extractClassPath = extractClassPath;
+    
+    public void setExtractClassName(String extractClassName) {
+        this.extractClassName = extractClassName;
     }
-
-    @Override
-    public String toString() {
+    
+    public String toString()
+    {
         return JSONObject.toJSONString(this);
     }
     
-    public Task(String url, boolean subPageCrawl, int subPageSize, String downLoadClassPath, String extractClassPath, String siteName) {
+    public Task(String url, boolean subPageCrawl, int subPageSize, String downLoadClassName, String extractClassName, String siteName) {
         this.url = url;
         this.subPageCrawl = subPageCrawl;
         this.subPageSize = subPageSize;
-        this.downLoadClassPath = downLoadClassPath;
-        this.extractClassPath = extractClassPath;
+        this.downLoadClassName = downLoadClassName;
+        this.extractClassName = extractClassName;
         this.siteName = siteName;
     }
 }

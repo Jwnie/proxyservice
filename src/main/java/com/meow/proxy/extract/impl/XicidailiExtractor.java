@@ -25,7 +25,7 @@ import java.util.List;
  *         date:2017/12/15
  *         email:jwnie@foxmail.com
  */
-@Component
+@Component("xicidailiExtractor")
 public class XicidailiExtractor implements Extractor {
     private final static Logger LOG = LoggerFactory.getLogger(XicidailiExtractor.class);
 

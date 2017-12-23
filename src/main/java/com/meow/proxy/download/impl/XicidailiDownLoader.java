@@ -21,7 +21,7 @@ import java.util.List;
  *         date:2017/12/15
  *         email:jwnie@foxmail.com
  */
-@Component
+@Component(value="xicidailiDownLoader")
 public class XicidailiDownLoader extends BaseDownLoader implements DownLoader {
     private final static Logger LOG = LoggerFactory.getLogger(XicidailiDownLoader.class);
 

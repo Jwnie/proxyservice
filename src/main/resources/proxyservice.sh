@@ -1,11 +1,11 @@
 #! /bin/bash
 WORK_HOME="/home/elise/app/proxyservice"
-APP_NAME="com.meow.proxy.ProxyserviceApplication"
+APP_NAME="com.meow.proxy.Proxyservice"
 APP_VERSION="proxyservice-1.0"
-PROGRAM="com.meow.proxy.ProxyserviceApplication"
+PROGRAM="com.meow.proxy.Proxyservice"
 AUTHOR="alex<niejiawen9x@gmail.com>"
 ABOUT="proxyservice"
-MAIN_CLASS="com.meow.proxy.ProxyserviceApplication"
+MAIN_CLASS="com.meow.proxy.Proxyservice"
 JVM_OPTION="-Xms512m -Xmx1024m -XX:+ForceTimeHighResolution"
 
 

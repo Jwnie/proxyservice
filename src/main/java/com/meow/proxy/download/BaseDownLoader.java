@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -21,10 +22,13 @@ import java.util.Random;
  *         date:2017/12/15
  *         email:jwnie@foxmail.com
  */
-@Component
+@Component(value="baseDownLoader")
 public abstract class BaseDownLoader implements DownLoader {
     private final static Logger LOG = LoggerFactory.getLogger(BaseDownLoader.class);
-
+    
+    @Autowired
+    protected WebDriverFactory webDriverFactory;
+    
     /**
      * 包括翻页下载，返回List<String>
      *
@@ -110,5 +114,57 @@ public abstract class BaseDownLoader implements DownLoader {
             }
         }
         return htmlContentList;
+    }
+    
+    protected String downLoad(WebDriver webDriver, String url)
+    {
+        String htmlContent = null;
+        try {
+            for (int i = 0; i < 3; i++)
+                try {
+                    webDriver.get(url);
+                    WebElement webElement = webDriver.findElement(By.xpath("/html"));
+                    htmlContent = webElement.getAttribute("outerHTML");
+                }
+                catch (Exception e) {
+                    try {
+                        Thread.sleep(3000L);
+                    } catch (InterruptedException e1) {
+                        LOG.error("", e);
+                    }
+                }
+        }
+        catch (Exception e) {
+            LOG.error("下载失败", e);
+        }
+        return htmlContent;
+    }
+    
+    protected List<String> downLoad(List<String> urlList) {
+        List htmlContentList = new ArrayList(50);
+        if (CollectionUtils.isEmpty(urlList)) {
+            return htmlContentList;
+        }
+        WebDriver webDriver = null;
+        try {
+            webDriver = this.webDriverFactory.getWebDriver();
+            for (String url : urlList) {
+                String htmlContent = downLoad(webDriver, url);
+                if (StringUtils.isNotBlank(htmlContent))
+                    htmlContentList.add(htmlContent);
+            }
+        }
+        catch (Exception e) {
+            LOG.error("下载异常:", e);
+        } finally {
+            closeResource(webDriver);
+        }
+        return htmlContentList;
+    }
+    
+    protected void closeResource(WebDriver webDriver)
+    {
+        if (webDriver != null)
+            webDriver.close();
     }
 }

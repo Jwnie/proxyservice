@@ -5,6 +5,7 @@ package com.meow.proxy.enums;
  */
 public enum ProxySite {
 	xicidaili("www.xicidaili.com","西刺免费代理IP"),
+	goubanjia("www.goubanjia.com", "全网代理IP"),
 	;
 	
 	private String proxySiteDomain;

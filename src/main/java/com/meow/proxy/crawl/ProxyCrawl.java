@@ -1,5 +1,6 @@
 package com.meow.proxy.crawl;
 
+import com.meow.proxy.appcontext.AppcontextUtil;
 import com.meow.proxy.download.BaseDownLoader;
 import com.meow.proxy.entity.Proxy;
 import com.meow.proxy.entity.Task;
@@ -21,8 +22,8 @@ public class ProxyCrawl {
 	public  List<Proxy> crawl(Task task){
 		List<Proxy> proxies = new ArrayList<>(50);
 		try {
-			BaseDownLoader downLoader = (BaseDownLoader)Class.forName(task.getDownLoadClassPath()).newInstance();
-			Extractor extractor = (Extractor)Class.forName(task.getExtractClassPath()).newInstance();
+			BaseDownLoader downLoader = (BaseDownLoader)AppcontextUtil.getBean(task.getDownLoadClassName());
+			Extractor extractor = (Extractor) AppcontextUtil.getBean(task.getExtractClassName());
 			List<String> htmlContentList = downLoader.downLoad(task);
 			proxies.addAll(extractor.extract(htmlContentList));
 		} catch (ClassNotFoundException e) {

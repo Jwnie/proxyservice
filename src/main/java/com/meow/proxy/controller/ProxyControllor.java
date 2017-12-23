@@ -49,23 +49,4 @@ public class ProxyControllor {
     }
 
 
-
-    //@RequestMapping(value = "/getSpecificProxy", method = RequestMethod.GET)
-    public ProxyQueryResult getSpecificProxy(@Param("protocolType") String protocolType, @Param("isDemostic") int isDemostic, @Param("anonymousType") String anonymousType) {
-        ProxyQueryResult proxyQueryResult = new ProxyQueryResult();
-        List<Proxy> proxies = null;
-        if (isDemostic > 0) {
-            proxies = proxyService.queryDomesticProxies(anonymousType, protocolType);
-        } else {
-            proxies = proxyService.queryForeignProxies(anonymousType, protocolType);
-        }
-        if (CollectionUtils.isNotEmpty(proxies)) {
-            proxyQueryResult.setProxies(proxies);
-            proxyQueryResult.setProxyCount(proxies.size());
-            proxyQueryResult.setStatus("success");
-        }
-        return proxyQueryResult;
-    }
-
-
 }

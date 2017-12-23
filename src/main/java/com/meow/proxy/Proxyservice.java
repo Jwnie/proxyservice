@@ -14,11 +14,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan("com.meow.proxy.dao")
 @EnableScheduling
 @SpringBootApplication
-public class ProxyserviceApplication {
-	private final static Logger LOG = LoggerFactory.getLogger(ProxyserviceApplication.class);
+public class Proxyservice {
+	private final static Logger LOG = LoggerFactory.getLogger(Proxyservice.class);
 	public static void main(String[] args) {
         LOG.info("Proxyservice start >>>>>>");
-        ApplicationContext ctx = SpringApplication.run(ProxyserviceApplication.class, args);
-//        ctx.getBean(ProxyRecheck.class).run();
+        SpringApplication.run(Proxyservice.class, args);
 	}
 }
