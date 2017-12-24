@@ -26,12 +26,8 @@ public class ProxyCrawl {
 			Extractor extractor = (Extractor) AppcontextUtil.getBean(task.getExtractClassName());
 			List<String> htmlContentList = downLoader.downLoad(task);
 			proxies.addAll(extractor.extract(htmlContentList));
-		} catch (ClassNotFoundException e) {
-			LOG.error("未找到下载或抽取类",e);
-		} catch (IllegalAccessException e) {
-			LOG.error("",e);
-		} catch (InstantiationException e) {
-			LOG.error("",e);
+		} catch (Exception e) {
+			LOG.error("代理抽取失败",e);
 		}
 		return proxies;
 	}

@@ -8,6 +8,9 @@ import com.meow.proxy.request.Response;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,7 +144,7 @@ public abstract class BaseDownLoader implements DownLoader {
     }
     
     protected List<String> downLoad(List<String> urlList) {
-        List htmlContentList = new ArrayList(50);
+        List<String> htmlContentList = new ArrayList<String>(50);
         if (CollectionUtils.isEmpty(urlList)) {
             return htmlContentList;
         }

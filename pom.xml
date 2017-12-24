@@ -194,7 +194,10 @@
                             这里只能指定要排除的目标文件，而不能指定源文件，虽然不够完美，但是基本能达到目的。-->
                         <exclude>*.sh</exclude>
                         <exclude>*.jar</exclude>
-                        <!--<exclude>*.xml</exclude>-->
+                        <exclude>*.properties</exclude>
+                        <exclude>conf/*.xml</exclude>
+                        <exclude>sql/*.sql</exclude>
+                        <exclude>mapper/*.xml</exclude>
                     </excludes>
                 </configuration>
             </plugin>

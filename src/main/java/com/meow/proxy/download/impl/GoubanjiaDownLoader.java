@@ -32,7 +32,6 @@ public class GoubanjiaDownLoader extends BaseDownLoader implements DownLoader {
      */
     @Override
     public List<String> downLoad(Task task) {
-        HttpClientUtil httpClientUtil = HttpClientUtil.getInstance();
         List<String> htmlContentList = new ArrayList<String>(20);
         try {
             if (task != null) {
