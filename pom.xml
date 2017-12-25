@@ -197,7 +197,6 @@
                         <exclude>*.properties</exclude>
                         <exclude>conf/*.xml</exclude>
                         <exclude>sql/*.sql</exclude>
-                        <exclude>mapper/*.xml</exclude>
                     </excludes>
                 </configuration>
             </plugin>
