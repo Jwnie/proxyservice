@@ -19,9 +19,6 @@ public class AppcontextUtil implements ApplicationContextAware {
     private final static Logger LOG = LoggerFactory.getLogger(AppcontextUtil.class);
     private static ApplicationContext applicationContext = null;
 
-    /*public AppcontextUtil() {
-    }*/
-
     /**
      * 根据beanName生成对应的bean
      *

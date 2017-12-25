@@ -28,7 +28,7 @@ public class WebDriverFactory {
 			System.setProperty("webdriver.chrome.driver", configure.getChromeDriverPath());
 			ChromeOptions options = new ChromeOptions();
 			//设置不弹窗口
-//            options.addArguments("--headless");
+            options.addArguments("--headless");
 			
 			//设置Chrome不加载图片
 	   /* Map<String, Object> contentSettings = new HashMap<String, Object>();

@@ -146,6 +146,7 @@ public class ProxyRecheckHandler {
                         if (proxies.size() >= BATCH_UPDATE_SIEZ) {
                             proxyService.updateProxies(proxies);
                             proxies.clear();
+                            LOG.info("批量更新代理成功！");
                         }
                         LOG.info(this.threadName + " 校验代理结果>>> " + proxy.getIp() + ":" + proxy.getProtocolType() + ",是否有效: " + proxy.isValid());
                     }
