@@ -30,10 +30,10 @@
             AND protocolType = #{protocolType, jdbcType=VARCHAR}
         </if>
         <if test="isDemostic != null and isDemostic == 'true' ">
-            AND country = 'china'
+            AND (country = 'china' OR country = '中国')
         </if>
         <if test="isDemostic != null and isDemostic == 'false' ">
-            AND country != 'china'
+            AND (country != 'china' OR country != '中国')
         </if>
         ORDER BY responseTime ASC,checkTime DESC LIMIT 100;
     </select>
