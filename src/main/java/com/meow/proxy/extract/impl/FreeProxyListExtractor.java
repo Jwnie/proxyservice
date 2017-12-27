@@ -2,8 +2,8 @@ package com.meow.proxy.extract.impl;
 
 import com.meow.proxy.check.ProxyCheck;
 import com.meow.proxy.entity.Proxy;
-import com.meow.proxy.enums.CountryType;
 import com.meow.proxy.enums.ProxyAnonymousType;
+import com.meow.proxy.enums.ProxyProtocolType;
 import com.meow.proxy.enums.ProxySite;
 import com.meow.proxy.extract.Extractor;
 import org.apache.commons.collections.CollectionUtils;
@@ -22,12 +22,12 @@ import java.util.List;
 
 /**
  * @author Alex
- *         date:2017/12/15
+ *         date:2017/12/27
  *         email:jwnie@foxmail.com
  */
-@Component("xicidailiExtractor")
-public class XicidailiExtractor implements Extractor {
-    private final static Logger LOG = LoggerFactory.getLogger(XicidailiExtractor.class);
+@Component("freeProxyListExtractor")
+public class FreeProxyListExtractor implements Extractor {
+    private final static Logger LOG = LoggerFactory.getLogger(FreeProxyListExtractor.class);
 
     @Override
     public List<Proxy> extract(String htmlContent) {
@@ -35,11 +35,11 @@ public class XicidailiExtractor implements Extractor {
         Document document = Jsoup.parse(htmlContent);
         ProxyCheck proxyCheck = ProxyCheck.getInstance();
         if (document != null) {
-            Elements elements = document.select("tr.odd");
+            Elements elements = document.select("tbody tr");
             if (CollectionUtils.isNotEmpty(elements)) {
                 for (Element element : elements) {
                     long beginTime = System.currentTimeMillis();
-                    Element ipEle = element.getElementsByClass("country").first().nextElementSibling();
+                    Element ipEle = element.select("td").first();
                     if (ipEle != null) {
                         Element portELe = ipEle.nextElementSibling();
                         String ip = ipEle.text();
@@ -47,19 +47,35 @@ public class XicidailiExtractor implements Extractor {
                         boolean valid = proxyCheck.checkProxyBySocket(new HttpHost(ip, port), true);
                         if (valid) {
                             long end = System.currentTimeMillis();
-                            Element areaEle = portELe.nextElementSibling();
-                            Element anonymousEle = areaEle.nextElementSibling();
-                            Element protocolEle = anonymousEle.nextElementSibling();
+                            Element countryEle = portELe.nextElementSibling().nextElementSibling();
+                            Element versionEle = countryEle.nextElementSibling();
+                            Element anonymousEle = countryEle.nextElementSibling();
+                            String country = countryEle.text();
+                            if (country.contains("Hong Kong") || country.contains("Taiwan") || country.contains("Macao")) {
+                                country += ", CN";
+                            }
 
                             Proxy proxy = new Proxy();
-                            proxy.setCountry(CountryType.china.getCountryName());
+                            proxy.setCountry(country);
                             proxy.setIp(ip);
                             proxy.setPort(port);
-                            proxy.setArea(areaEle.text());
+
+                            if (versionEle.text().contains("Socks")) {
+                                anonymousEle = versionEle.nextElementSibling();
+                                proxy.setProtocolType(versionEle.text());
+                            } else {
+                                Element protocolEle = anonymousEle.nextElementSibling().nextElementSibling();
+                                if (protocolEle.text().contains("no")) {
+                                    proxy.setProtocolType(ProxyProtocolType.http.getRequestType());
+                                } else {
+                                    proxy.setProtocolType(ProxyProtocolType.https.getRequestType());
+                                }
+                            }
+
+                            proxy.setArea("");
                             proxy.setCheckStatus(1);
                             proxy.setAnonymousType(getAnonymousType(anonymousEle));
-                            proxy.setProtocolType(protocolEle.text());
-                            proxy.setSourceSite(ProxySite.xicidaili.getProxySiteName());
+                            proxy.setSourceSite(ProxySite.freeProxyList.getProxySiteName());
                             proxy.setCheckTime(beginTime);
                             proxy.setCrawlTime(beginTime);
                             proxy.setValidTime(1);
@@ -71,7 +87,7 @@ public class XicidailiExtractor implements Extractor {
                             proxies.add(proxy);
                         }
                     } else {
-                        LOG.warn("XicidailiExtractor can not extract anything..., please check.");
+                        LOG.warn("freeProxyListExtractor can not extract anything..., please check.");
                     }
                 }
             }
@@ -100,12 +116,14 @@ public class XicidailiExtractor implements Extractor {
         String text = element.text();
         if (StringUtils.isNoneBlank(text)) {
             switch (text) {
-                case "高匿":
+                case "elite proxy":
                     return ProxyAnonymousType.elite.getAnonymousType();
-                case "透明":
+                case "transparent":
                     return ProxyAnonymousType.transparent.getAnonymousType();
+                case "anonymous":
+                    return ProxyAnonymousType.anonymous.getAnonymousType();
                 default:
-                    LOG.warn("Can not verify the anonymousType of proxy from XiciDaili>>>:" + text);
+                    LOG.warn("Can not verify the anonymousType of proxy from free-Proxy-List>>>:" + text);
             }
         }
         return text;

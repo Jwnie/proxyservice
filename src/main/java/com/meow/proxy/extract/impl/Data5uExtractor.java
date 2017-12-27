@@ -1,8 +1,9 @@
 package com.meow.proxy.extract.impl;
 
 import com.meow.proxy.check.ProxyCheck;
+import com.meow.proxy.check.ProxyIp2Addr;
+import com.meow.proxy.entity.IPAddr;
 import com.meow.proxy.entity.Proxy;
-import com.meow.proxy.enums.CountryType;
 import com.meow.proxy.enums.ProxyAnonymousType;
 import com.meow.proxy.enums.ProxySite;
 import com.meow.proxy.extract.Extractor;
@@ -22,12 +23,12 @@ import java.util.List;
 
 /**
  * @author Alex
- *         date:2017/12/15
+ *         date:2017/12/27
  *         email:jwnie@foxmail.com
  */
-@Component("xicidailiExtractor")
-public class XicidailiExtractor implements Extractor {
-    private final static Logger LOG = LoggerFactory.getLogger(XicidailiExtractor.class);
+@Component(value = "data5uExtractor")
+public class Data5uExtractor implements Extractor {
+    private final static Logger LOG = LoggerFactory.getLogger(Data5uExtractor.class);
 
     @Override
     public List<Proxy> extract(String htmlContent) {
@@ -35,35 +36,53 @@ public class XicidailiExtractor implements Extractor {
         Document document = Jsoup.parse(htmlContent);
         ProxyCheck proxyCheck = ProxyCheck.getInstance();
         if (document != null) {
-            Elements elements = document.select("tr.odd");
+            Elements elements = document.select("ul.l2");
             if (CollectionUtils.isNotEmpty(elements)) {
                 for (Element element : elements) {
                     long beginTime = System.currentTimeMillis();
-                    Element ipEle = element.getElementsByClass("country").first().nextElementSibling();
+                    Element ipEle = element.select("span").first();
                     if (ipEle != null) {
-                        Element portELe = ipEle.nextElementSibling();
+                        Element portEle = ipEle.nextElementSibling();
                         String ip = ipEle.text();
-                        int port = Integer.parseInt(portELe.text());
+                        int port = Integer.parseInt(portEle.text());
                         boolean valid = proxyCheck.checkProxyBySocket(new HttpHost(ip, port), true);
                         if (valid) {
                             long end = System.currentTimeMillis();
-                            Element areaEle = portELe.nextElementSibling();
-                            Element anonymousEle = areaEle.nextElementSibling();
+                            Element anonymousEle = portEle.nextElementSibling();
                             Element protocolEle = anonymousEle.nextElementSibling();
+                            Element coutryEle = protocolEle.nextElementSibling();
+                            Element areaEle = coutryEle.nextElementSibling();
+                            String area = areaEle.text();
+                            String country = coutryEle.text();
+
+                            if ("香港".equals(country) || "澳门".equals(country) || "台湾".equals(country)) {
+                                country = "中国 " + country;
+                            }
+
+
+                            if (StringUtils.isEmpty(country)) {
+                                IPAddr ipAddr = ProxyIp2Addr.getInstance().getIPAddrBYTaobaoAPI(ip);
+                                country = ipAddr.getCountry();
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(ipAddr.getProvince()).append(" ").append(ipAddr.getCity());
+                                area = sb.toString();
+                            }
 
                             Proxy proxy = new Proxy();
-                            proxy.setCountry(CountryType.china.getCountryName());
+                            proxy.setCountry(country);
                             proxy.setIp(ip);
                             proxy.setPort(port);
-                            proxy.setArea(areaEle.text());
+                            proxy.setArea(area);
                             proxy.setCheckStatus(1);
                             proxy.setAnonymousType(getAnonymousType(anonymousEle));
                             proxy.setProtocolType(protocolEle.text());
-                            proxy.setSourceSite(ProxySite.xicidaili.getProxySiteName());
+                            proxy.setSourceSite(ProxySite.data5u.getProxySiteName());
                             proxy.setCheckTime(beginTime);
                             proxy.setCrawlTime(beginTime);
                             proxy.setValidTime(1);
+                            //默认值
                             proxy.setLastSurviveTime(-1L);
+                            //默认值
                             proxy.setInvalidTime(-1L);
                             proxy.setValid(true);
                             proxy.setResponseTime(end - beginTime);
@@ -71,7 +90,7 @@ public class XicidailiExtractor implements Extractor {
                             proxies.add(proxy);
                         }
                     } else {
-                        LOG.warn("XicidailiExtractor can not extract anything..., please check.");
+                        LOG.warn("data5uExtractor can not extract anything..., please check.");
                     }
                 }
             }
@@ -102,10 +121,12 @@ public class XicidailiExtractor implements Extractor {
             switch (text) {
                 case "高匿":
                     return ProxyAnonymousType.elite.getAnonymousType();
+                case "匿名":
+                    return ProxyAnonymousType.anonymous.getAnonymousType();
                 case "透明":
                     return ProxyAnonymousType.transparent.getAnonymousType();
                 default:
-                    LOG.warn("Can not verify the anonymousType of proxy from XiciDaili>>>:" + text);
+                    LOG.warn("Can not verify the anonymousType of proxy from data5u>>>:" + text);
             }
         }
         return text;

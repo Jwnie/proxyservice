@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -78,12 +79,12 @@ public class HttpClientUtil {
         return HttpUtilSingleton.HTTP_UTIL;
     }
 
-    public CloseableHttpClient createHttpClient(){
-        return createHttpClient(CONNECT_TIMEOUT, null ,null);
+    public CloseableHttpClient createHttpClient() {
+        return createHttpClient(CONNECT_TIMEOUT, null, null);
     }
 
 
-    public CloseableHttpClient createHttpClient(int timeOut, HttpHost httpHost, BasicClientCookie basicClientCookie){
+    public CloseableHttpClient createHttpClient(int timeOut, HttpHost httpHost, BasicClientCookie basicClientCookie) {
         RequestConfig.Builder builder = RequestConfig.custom()
                 .setConnectionRequestTimeout(timeOut)
                 .setConnectTimeout(timeOut)
@@ -92,7 +93,7 @@ public class HttpClientUtil {
 
 
         //设置代理
-        if(httpHost != null && StringUtils.isNotBlank(httpHost.getHostName())&& httpHost.getPort() > 0){
+        if (httpHost != null && StringUtils.isNotBlank(httpHost.getHostName()) && httpHost.getPort() > 0) {
             builder.setProxy(httpHost);
         }
 
@@ -101,7 +102,7 @@ public class HttpClientUtil {
         httpClientBuilder.setDefaultRequestConfig(requestConfig).setRetryHandler(new RequestRetryHandler())
                 .setConnectionManager(clientConnectionManager);
 
-        if(basicClientCookie != null){
+        if (basicClientCookie != null) {
             CookieStore cookieStore = new BasicCookieStore();
             cookieStore.addCookie(basicClientCookie);
             httpClientBuilder.setDefaultCookieStore(cookieStore);
@@ -125,6 +126,7 @@ public class HttpClientUtil {
                         }
                         return isRedirect;
                     }
+
                     @Override
                     protected URI createLocationURI(String location) throws ProtocolException {
                         location = location.replace("|", "%7C");
@@ -136,48 +138,48 @@ public class HttpClientUtil {
     }
 
 
-    public Response getResponse(CloseableHttpClient client,String url) {
-        return getResponse(client,null, url);
+    public Response getResponse(CloseableHttpClient client, String url) {
+        return getResponse(client, null, url);
     }
 
     /**
      * Request 參數為null，則默認為httpGet請求
+     *
      * @param client
      * @param request
      * @param url
      * @return
      */
-    public Response getResponse(CloseableHttpClient client,Request request, String url) {
-        if(request != null){
-            if(request.getMethod().equals(Const.METHOD_HTTPGET)){
-                return httpGetResponse(client,request,url);
-            }else if(request.getMethod().equals(Const.METHOD_HTTPPOST)){
-                return httpPostResponse(client,request,url);
-            }else{
-                LOG.warn("暂不支持的http请求类型："+ request.getMethod());
+    public Response getResponse(CloseableHttpClient client, Request request, String url) {
+        if (request != null) {
+            if (request.getMethod().equals(Const.METHOD_HTTPGET)) {
+                return httpGetResponse(client, request, url);
+            } else if (request.getMethod().equals(Const.METHOD_HTTPPOST)) {
+                return httpPostResponse(client, request, url);
+            } else {
+                LOG.warn("暂不支持的http请求类型：" + request.getMethod());
                 return null;
             }
-        }else{
-            return httpGetResponse(client,null,url);
+        } else {
+            return httpGetResponse(client, null, url);
         }
     }
 
-    public Response httpGetResponse(CloseableHttpClient client,String url){
-        return httpGetResponse(client,null,url);
+    public Response httpGetResponse(CloseableHttpClient client, String url) {
+        return httpGetResponse(client, null, url);
     }
 
-    public Response httpPostResponse(CloseableHttpClient client,String url){
-        return httpPostResponse(client,null,url);
+    public Response httpPostResponse(CloseableHttpClient client, String url) {
+        return httpPostResponse(client, null, url);
     }
 
 
-
-    private Response httpGetResponse(CloseableHttpClient client,Request request, String url){
+    private Response httpGetResponse(CloseableHttpClient client, Request request, String url) {
         CloseableHttpResponse closeableHttpResponse = null;
         HttpGet httpGet = new HttpGet(urlEncode(url));
         Response response = null;
         //请求头设置
-        if(request != null){
+        if (request != null) {
             Map<String, String> headers = request.getHeaders();
             if (headers != null && headers.size() > 0) {
                 for (Map.Entry<String, String> entry : headers.entrySet()) {
@@ -186,23 +188,23 @@ public class HttpClientUtil {
             }
         }
 
-        try{
+        try {
             closeableHttpResponse = client.execute(httpGet);
-            response = getHttpResponse(request,closeableHttpResponse);
+            response = getHttpResponse(request, closeableHttpResponse);
             response.setUrl(url);
-        }catch(Exception e){
-            LOG.error("请求失败，url:"+url,e);
-        }finally {
+        } catch (Exception e) {
+            LOG.error("请求失败，url:" + url, e);
+        } finally {
             //使用连接池无需关闭
             //closeResources(closeableHttpResponse, null);
         }
         return response;
     }
 
-    private Response httpPostResponse(CloseableHttpClient client,Request request, String url){
+    private Response httpPostResponse(CloseableHttpClient client, Request request, String url) {
         Response response = null;
         HttpPost httpPost = new HttpPost(urlEncode(url));
-        if(request != null){
+        if (request != null) {
             Map<String, String> headers = request.getHeaders();
             // 设置头
             if (headers != null && headers.size() != 0) {
@@ -212,26 +214,26 @@ public class HttpClientUtil {
             }
 
             Map<String, Object> params = request.getParams();
-            if(params != null && params.size()>0){
+            if (params != null && params.size() > 0) {
                 List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-                for(Map.Entry<String,Object> entry : params.entrySet()){
+                for (Map.Entry<String, Object> entry : params.entrySet()) {
                     nvps.add(new BasicNameValuePair(entry.getKey(), String.valueOf(entry.getValue())));
                 }
                 try {
                     httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
                 } catch (UnsupportedEncodingException e) {
-                    LOG.error("设置post请求参数失败:",e);
+                    LOG.error("设置post请求参数失败:", e);
                 }
             }
         }
         CloseableHttpResponse closeableHttpResponse = null;
-        try{
+        try {
             closeableHttpResponse = client.execute(httpPost);
-            response = getHttpResponse(request,closeableHttpResponse);
+            response = getHttpResponse(request, closeableHttpResponse);
             response.setUrl(url);
-        }catch(Exception e){
-            LOG.error("请求失败，url:"+url,e);
-        }finally{
+        } catch (Exception e) {
+            LOG.error("请求失败，url:" + url, e);
+        } finally {
             //使用连接池无需关闭
             //closeResources(closeableHttpResponse, null);
         }
@@ -239,22 +241,22 @@ public class HttpClientUtil {
     }
 
 
-
     /**
      * 设置response
+     *
      * @param request
      * @param httpResponse
      * @return
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    private Response getHttpResponse(Request request, CloseableHttpResponse httpResponse) throws UnsupportedEncodingException,IOException {
+    private Response getHttpResponse(Request request, CloseableHttpResponse httpResponse) throws UnsupportedEncodingException, IOException {
         Response response = new Response();
         String charSet = "utf-8";
-        if(request != null){
+        if (request != null) {
             charSet = request.getCharSet();
-            if(StringUtils.isBlank(charSet)){
-                charSet = httpResponse.getEntity().getContentType()==null ? "utf-8":StringUtils.contains(httpResponse.getEntity().getContentType().getValue(),"charset") ? getCharSet(httpResponse.getEntity().getContentType().getValue()):"utf-8";
+            if (StringUtils.isBlank(charSet)) {
+                charSet = httpResponse.getEntity().getContentType() == null ? "utf-8" : StringUtils.contains(httpResponse.getEntity().getContentType().getValue(), "charset") ? getCharSet(httpResponse.getEntity().getContentType().getValue()) : "utf-8";
             }
         }
         response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
@@ -262,7 +264,7 @@ public class HttpClientUtil {
         HttpEntity entity = httpResponse.getEntity();
         Header header = entity.getContentEncoding();
         InputStream in = entity.getContent();
-        try{
+        try {
             if (header != null && Const.SYMBOL_ZIP.equals(header.getValue().toLowerCase())) {
                 byte[] bytes = ByteStreams.toByteArray(new GZIPInputStream(in));
                 String content = new String(bytes, charSet);
@@ -272,9 +274,9 @@ public class HttpClientUtil {
                 String content = new String(bytes, charSet);
                 response.setContent(content);
             }
-        }catch(Exception e){
-            LOG.error("读取响应内容异常: ",e);
-        }finally{
+        } catch (Exception e) {
+            LOG.error("读取响应内容异常: ", e);
+        } finally {
             //关闭流的作用就是将用完的连接释放，下次请求可以复用，如不使用in.close();而仅仅使用response.close();结果就是连接会被关闭，并且不能被复用，如此失去了采用连接池的意义。
             IOUtils.closeQuietly(in);
         }
@@ -285,15 +287,16 @@ public class HttpClientUtil {
      * 将url进行encode编码，这里不能直接使用URlEncode(url,"utf-8");方法进编码，
      * 会报org.apache.http.client.ClientProtocolException，这里只将特殊字符转义
      * 如：+、空格、#、{、}、“ 等
+     *
      * @param url
      * @return
      */
-    private String urlEncode(String url){
-        url = url.replaceAll("\\+","%2b")
-                .replaceAll(" ","%20")
-                .replaceAll("\\{","%7b")
-                .replaceAll("}","%7d")
-                .replaceAll("\"","%22");
+    private String urlEncode(String url) {
+        url = url.replaceAll("\\+", "%2b")
+                .replaceAll(" ", "%20")
+                .replaceAll("\\{", "%7b")
+                .replaceAll("}", "%7d")
+                .replaceAll("\"", "%22");
         return url;
     }
 
@@ -338,9 +341,9 @@ public class HttpClientUtil {
             // 设置每个连接的路由数
             clientConnectionManager.setDefaultMaxPerRoute(MAX_ROUTE_CONNECTIONS);
         } catch (NoSuchAlgorithmException e) {
-            LOG.error("",e);
+            LOG.error("", e);
         } catch (KeyManagementException e) {
-            LOG.error("",e);
+            LOG.error("", e);
         }
     }
 
@@ -350,10 +353,11 @@ public class HttpClientUtil {
 
     /**
      * 截取编码方式
+     *
      * @param str
      * @return
      */
-    private String getCharSet(String str){
+    private String getCharSet(String str) {
         String charSet = match(str, Const.CHARSET_PATTERN);
         return charSet;
     }
@@ -361,6 +365,7 @@ public class HttpClientUtil {
 
     /**
      * 正则匹配
+     *
      * @param s
      * @param pattern
      * @return
@@ -375,16 +380,16 @@ public class HttpClientUtil {
         }
     }
 
-    public void closeResources(CloseableHttpResponse closeableHttpResponse, CloseableHttpClient closeableHttpClient){
-        try{
-            if(closeableHttpResponse != null){
+    public void closeResources(CloseableHttpResponse closeableHttpResponse, CloseableHttpClient closeableHttpClient) {
+        try {
+            if (closeableHttpResponse != null) {
                 closeableHttpResponse.close();
             }
-            if(closeableHttpClient != null){
+            if (closeableHttpClient != null) {
                 closeableHttpClient.close();
             }
-        }catch(IOException e){
-            LOG.error("关闭closeableHttpResponse失败：",e);
+        } catch (IOException e) {
+            LOG.error("关闭closeableHttpResponse失败：", e);
         }
     }
 }

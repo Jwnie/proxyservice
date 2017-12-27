@@ -16,11 +16,12 @@ import java.net.UnknownHostException;
 
 /**
  * 请求重试处理
+ *
  * @author Alex
  *         date:2017/12/14
  *         email:jwnie@foxmail.com
  */
-public class RequestRetryHandler implements HttpRequestRetryHandler{
+public class RequestRetryHandler implements HttpRequestRetryHandler {
 
 
     @Override

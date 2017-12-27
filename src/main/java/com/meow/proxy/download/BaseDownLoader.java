@@ -25,13 +25,13 @@ import java.util.Random;
  *         date:2017/12/15
  *         email:jwnie@foxmail.com
  */
-@Component(value="baseDownLoader")
+@Component(value = "baseDownLoader")
 public abstract class BaseDownLoader implements DownLoader {
     private final static Logger LOG = LoggerFactory.getLogger(BaseDownLoader.class);
-    
+
     @Autowired
     protected WebDriverFactory webDriverFactory;
-    
+
     /**
      * 包括翻页下载，返回List<String>
      *
@@ -74,12 +74,14 @@ public abstract class BaseDownLoader implements DownLoader {
         }
         //默认为httpGet请求(子类Post请求需要覆写此方法)
         request.setMethod(Const.METHOD_HTTPGET);
-        request.setCharSet("utf-8");
+        if (StringUtils.isEmpty(request.getCharSet())) {
+            request.setCharSet("utf-8");
+        }
         request.setHeader("User-Agent", Const.USER_AGENT[new Random().nextInt(Const.USER_AGENT.length)]);
         request.setHeader("Connection", "keep-alive");
-        request.setHeader("Accept", "*/*");
+        request.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
         request.setHeader("Accept-Encoding", "gzip, deflate, br");
-        request.setHeader("Accept-Language", "zh-CN,zh;q=0.8");
+        request.setHeader("Accept-Language", "zh-CN,zh;q=0.9");
     }
 
     /**
@@ -118,9 +120,8 @@ public abstract class BaseDownLoader implements DownLoader {
         }
         return htmlContentList;
     }
-    
-    protected String downLoad(WebDriver webDriver, String url)
-    {
+
+    protected String downLoad(WebDriver webDriver, String url) {
         String htmlContent = null;
         try {
             for (int i = 0; i < 3; i++)
@@ -128,21 +129,19 @@ public abstract class BaseDownLoader implements DownLoader {
                     webDriver.get(url);
                     WebElement webElement = webDriver.findElement(By.xpath("/html"));
                     htmlContent = webElement.getAttribute("outerHTML");
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     try {
                         Thread.sleep(3000L);
                     } catch (InterruptedException e1) {
                         LOG.error("", e);
                     }
                 }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOG.error("下载失败", e);
         }
         return htmlContent;
     }
-    
+
     protected List<String> downLoad(List<String> urlList) {
         List<String> htmlContentList = new ArrayList<String>(50);
         if (CollectionUtils.isEmpty(urlList)) {
@@ -156,17 +155,15 @@ public abstract class BaseDownLoader implements DownLoader {
                 if (StringUtils.isNotBlank(htmlContent))
                     htmlContentList.add(htmlContent);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOG.error("下载异常:", e);
         } finally {
             closeResource(webDriver);
         }
         return htmlContentList;
     }
-    
-    protected void closeResource(WebDriver webDriver)
-    {
+
+    protected void closeResource(WebDriver webDriver) {
         if (webDriver != null)
             webDriver.close();
     }

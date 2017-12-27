@@ -15,9 +15,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication
 public class Proxyservice {
-	private final static Logger LOG = LoggerFactory.getLogger(Proxyservice.class);
-	public static void main(String[] args) {
+    private final static Logger LOG = LoggerFactory.getLogger(Proxyservice.class);
+
+    public static void main(String[] args) {
         LOG.info("Proxyservice start >>>>>>");
         SpringApplication.run(Proxyservice.class, args);
-	}
+    }
 }

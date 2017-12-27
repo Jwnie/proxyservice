@@ -42,9 +42,8 @@ public class GoubanjiaExtractor implements Extractor {
                     long beginTime = System.currentTimeMillis();
                     Element hostEle = element.getElementsByClass("ip").first();
                     hostEle.getElementsByTag("p").remove();
-//                    System.out.println(hostEle.text());
                     if (hostEle != null) {
-                        String host[] = hostEle.text().replaceAll("\\s+","").split(":");
+                        String host[] = hostEle.text().replaceAll("\\s+", "").split(":");
                         String ip = host[0];
                         int port = Integer.parseInt(host[1]);
                         boolean valid = proxyCheck.checkProxyBySocket(new HttpHost(ip, port), true);
@@ -131,7 +130,7 @@ public class GoubanjiaExtractor implements Extractor {
                 case "透明":
                     return ProxyAnonymousType.transparent.getAnonymousType();
                 default:
-                    LOG.warn("Can not verify the anonymousType of proxy from XiciDaili>>>:" + text);
+                    LOG.warn("Can not verify the anonymousType of proxy from goubanjia>>>:" + text);
             }
         }
         return text;

@@ -1,8 +1,12 @@
 # 爬取网上公开代理
 
-## 支持爬取的代理
+## 已支持爬取的代理网站
 * 西刺: http://www.xicidaili.com/
-* 全网代理IP: http://www.goubanjia.com/
+* 全网代理: http://www.goubanjia.com/
+* 云代理: http://www.ip3366.net/
+* Free Proxy List: https://www.us-proxy.org/
+* 无忧代理: http://www.data5u.com/
+
 
 ## 代理查询接口
 * <b>http://localhost:8888/proxy/getProxy?isDemostic=true&anonymousType=elite&protocolType=https</b><br>

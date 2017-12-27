@@ -20,8 +20,9 @@ public class ProxyCheckTest{
     public void checkProxy(){
 //        HttpHost httpHost = new HttpHost("113.218.191.170",8888);
 //        HttpHost httpHost = new HttpHost("223.241.119.16",8180);
-        HttpHost httpHost = new HttpHost("121.31.103.33",6666);
+//        HttpHost httpHost = new HttpHost("121.31.103.33",6666);
+        HttpHost httpHost = new HttpHost("139.59.169.81",8118);
         System.out.println(proxyCheck.checkProxyBySocket(httpHost,false));
-//        System.out.println(proxyCheck.checkProxyByRequestBaidu(httpHost));
+//        System.out.println(proxyCheck.checkProxyByRequestBaidu(httpHost,false));
     }
 }

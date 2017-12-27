@@ -18,8 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * @Scheduled的方法现在为并行执行
- * Created by Jwnie on 2017/12/17.
+ * @Scheduled的方法现在为并行执行 Created by Jwnie on 2017/12/17.
  */
 @Component
 public class ScheduleJobs {
@@ -50,7 +49,7 @@ public class ScheduleJobs {
         long begin = System.currentTimeMillis();
         List<Proxy> proxyList = proxyService.queryValidProxies();
         proxyRecheckSender.sendRecheckProxies(proxyList);
-        LOG.info("可用代理检测完成，用时: "+(System.currentTimeMillis() - begin)+" ms");
+        LOG.info("可用代理检测完成，用时: " + (System.currentTimeMillis() - begin) + " ms");
     }
 
 }
