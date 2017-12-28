@@ -7,7 +7,7 @@ package com.meow.proxy.base;
  */
 public class Const {
     /**
-     *http响应状态码
+     * http响应状态码
      */
     public final static int REDICT_301 = 301;
     public final static int REDICT_302 = 302;
@@ -16,7 +16,7 @@ public class Const {
      * userAgent
      */
     public final static String USERAGENT = "User-Agent";
-    public final static String USER_AGENT[]={
+    public final static String USER_AGENT[] = {
             "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.2; CIBA; MAXTHON 2.0)",
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36",
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.91 Safari/537.36",
@@ -34,11 +34,18 @@ public class Const {
     public final static String METHOD_HTTPGET = "httpGet";
     public final static String METHOD_HTTPPOST = "httpPost";
 
-    public static String CHARSET_PATTERN ="charset\\s?=\\s?((\\w+-?)?\\w+)\\s?";
+    public static String CHARSET_PATTERN = "charset\\s?=\\s?((\\w+-?)?\\w+)\\s?";
 
-    public static String SYMBOL_ZIP ="zip";
+    /**
+     * zip压缩的内容
+     */
+    public static String SYMBOL_ZIP = "zip";
+    /**
+     * Brotli 算法压缩的内容
+     */
+    public static String SYMBOL_BROTLI = "br";
 
-    public static String CHINESE_CHAR ="[\u4e00-\u9fa5]";
+    public static String CHINESE_CHAR = "[\u4e00-\u9fa5]";
 
     public static final int CPU_AVAILABLEPROCESSORS = Runtime.getRuntime().availableProcessors();
 

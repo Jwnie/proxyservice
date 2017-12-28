@@ -2,6 +2,8 @@ package com.meow.proxy.request;
 
 import com.google.common.io.ByteStreams;
 import com.meow.proxy.base.Const;
+import org.apache.commons.compress.compressors.brotli.BrotliCompressorInputStream;
+import org.apache.commons.compress.compressors.brotli.BrotliUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
@@ -267,6 +269,10 @@ public class HttpClientUtil {
         try {
             if (header != null && Const.SYMBOL_ZIP.equals(header.getValue().toLowerCase())) {
                 byte[] bytes = ByteStreams.toByteArray(new GZIPInputStream(in));
+                String content = new String(bytes, charSet);
+                response.setContent(content);
+            }else if (header != null && Const.SYMBOL_BROTLI.equals(header.getValue().toLowerCase())) {
+                byte[] bytes = ByteStreams.toByteArray(new BrotliCompressorInputStream(in));
                 String content = new String(bytes, charSet);
                 response.setContent(content);
             } else {

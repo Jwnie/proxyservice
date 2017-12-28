@@ -42,11 +42,7 @@ public class FreeProxyListDownLoader extends BaseDownLoader implements DownLoade
                 String origUrl = task.getUrl();
                 Request request = new Request();
                 request.setCharSet("utf-8");
-//                request.setHeader("Host", "free-proxy-list.net");
-//                request.setHeader("Upgrade-Insecure-Requests", "1");
                 setRequestParam(request);
-                //重新設置編碼(去掉br)
-                request.setHeader("Accept-Encoding", "gzip, deflate");
                 int pageSize = 1;
                 if (task.isSubPageCrawl()) {
                     pageSize = task.getSubPageSize() + 1;
