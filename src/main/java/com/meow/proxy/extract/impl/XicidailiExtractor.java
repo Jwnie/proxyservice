@@ -71,7 +71,7 @@ public class XicidailiExtractor implements Extractor {
                             proxies.add(proxy);
                         }
                     } else {
-                        LOG.warn("XicidailiExtractor can not extract anything..., please check.");
+                        LOG.error("XicidailiExtractor can not extract anything..., please check.");
                     }
                 }
             }
@@ -105,7 +105,7 @@ public class XicidailiExtractor implements Extractor {
                 case "透明":
                     return ProxyAnonymousType.transparent.getAnonymousType();
                 default:
-                    LOG.warn("Can not verify the anonymousType of proxy from XiciDaili>>>:" + text);
+                    LOG.error("Can not verify the anonymousType of proxy from XiciDaili>>>:" + text);
             }
         }
         return text;

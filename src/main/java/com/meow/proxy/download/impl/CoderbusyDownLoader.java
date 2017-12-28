@@ -15,15 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * free-proxy-list.net 境外代理
+ * coderbusy：https://proxy.coderbusy.com/
  *
  * @author Alex
- *         date:2017/12/15
+ *         date:2017/12/28
  *         email:jwnie@foxmail.com
  */
-@Component(value = "freeProxyListDownLoader")
-public class FreeProxyListDownLoader extends BaseDownLoader implements DownLoader {
-    private final static Logger LOG = LoggerFactory.getLogger(FreeProxyListDownLoader.class);
+@Component(value = "coderbusyDownLoader")
+public class CoderbusyDownLoader extends BaseDownLoader implements DownLoader {
+    private final static Logger LOG = LoggerFactory.getLogger(CoderbusyDownLoader.class);
 
     /**
      * 包括翻页下载，返回List<String>
@@ -41,22 +41,24 @@ public class FreeProxyListDownLoader extends BaseDownLoader implements DownLoade
             if (task != null) {
                 String origUrl = task.getUrl();
                 Request request = new Request();
-                request.setCharSet("utf-8");
                 setRequestParam(request);
                 int pageSize = 1;
                 if (task.isSubPageCrawl()) {
                     pageSize = task.getSubPageSize() + 1;
                 }
-                List<String> proxyUrlList = new ArrayList<>();
+                List<String> proxyUrlList = new ArrayList<>(pageSize * 2);
+                proxyUrlList.add("https://proxy.coderbusy.com/");
                 //代理url拼接
-                //uk代理
-//                proxyUrlList.add("https://free-proxy-list.net/uk-proxy.html");
-                //匿名代理
-//                proxyUrlList.add("https://free-proxy-list.net/anonymous-proxy.html");
-                //us代理
-                proxyUrlList.add("https://www.us-proxy.org/");
-                //socs代理
-                proxyUrlList.add("https://www.socks-proxy.net/");
+                for (int i = 1; i <= pageSize; i++) {
+                    //透明代理
+                    proxyUrlList.add("https://proxy.coderbusy.com/zh-cn/classical/anonymous-type/transparent/p" + i+".aspx");
+                    //普匿代理
+                    proxyUrlList.add("https://proxy.coderbusy.com/zh-cn/classical/anonymous-type/anonymous/p" + i+".aspx");
+                    //高匿代理
+                    proxyUrlList.add("https://proxy.coderbusy.com/zh-cn/classical/anonymous-type/highanonymous/p" + i+".aspx");
+                    //https代理
+                    proxyUrlList.add("https://proxy.coderbusy.com/zh-cn/classical/https-ready/p" + i+".aspx");
+                }
                 if (CollectionUtils.isNotEmpty(proxyUrlList)) {
                     htmlContentList.addAll(downLoad(httpClientUtil, closeableHttpClient, request, proxyUrlList));
                 }

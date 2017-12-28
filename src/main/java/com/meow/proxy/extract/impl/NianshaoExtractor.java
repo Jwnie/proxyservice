@@ -1,8 +1,6 @@
 package com.meow.proxy.extract.impl;
 
 import com.meow.proxy.check.ProxyCheck;
-import com.meow.proxy.check.ProxyIp2Addr;
-import com.meow.proxy.entity.IPAddr;
 import com.meow.proxy.entity.Proxy;
 import com.meow.proxy.enums.CountryType;
 import com.meow.proxy.enums.ProxyAnonymousType;
@@ -27,9 +25,9 @@ import java.util.List;
  *         date:2017/12/27
  *         email:jwnie@foxmail.com
  */
-@Component("ip3366Extractor")
-public class Ip3366Extractor implements Extractor {
-    private final static Logger LOG = LoggerFactory.getLogger(Ip3366Extractor.class);
+@Component("nianshaoExtractor")
+public class NianshaoExtractor implements Extractor {
+    private final static Logger LOG = LoggerFactory.getLogger(NianshaoExtractor.class);
 
     @Override
     public List<Proxy> extract(String htmlContent) {
@@ -37,7 +35,7 @@ public class Ip3366Extractor implements Extractor {
         Document document = Jsoup.parse(htmlContent);
         ProxyCheck proxyCheck = ProxyCheck.getInstance();
         if (document != null) {
-            Elements elements = document.select("div#list tbody tr");
+            Elements elements = document.select("table.table tbody tr");
             if (CollectionUtils.isNotEmpty(elements)) {
                 for (Element element : elements) {
                     long beginTime = System.currentTimeMillis();
@@ -49,28 +47,34 @@ public class Ip3366Extractor implements Extractor {
                         boolean valid = proxyCheck.checkProxyBySocket(new HttpHost(ip, port), true);
                         if (valid) {
                             long end = System.currentTimeMillis();
-                            Element anonymousEle = portELe.nextElementSibling();
+                            Element areaEle = portELe.nextElementSibling();
+                            Element anonymousEle = areaEle.nextElementSibling();
                             Element protocolEle = anonymousEle.nextElementSibling();
-                            Element areaEle = protocolEle.nextElementSibling();
 
-                            IPAddr ipAddr = ProxyIp2Addr.getInstance().getIPAddrBYTaobaoAPI(ip);
-                            String country = ipAddr.getCountry();
-                            if (StringUtils.isEmpty(country)) {
-                                country = areaEle.text().replaceAll(".*_", "");
-                                if (country.contains("省") || country.contains("市")) {
-                                    country = CountryType.china.getCountryName();
-                                }
+                            String area = areaEle.text();
+
+//                            IPAddr ipAddr = ProxyIp2Addr.getInstance().getIPAddrBYTaobaoAPI(ip);
+                            String country = "";
+                            if (area.contains("香港") || area.contains("澳门") || area.contains("台湾")) {
+                                country = "中国 " + country;
                             }
+
+                            if (area.contains("省") || area.contains("市") || area.contains("中国")) {
+                                country = CountryType.china.getCountryName();
+                            } else {
+                                country = area;
+                            }
+
 
                             Proxy proxy = new Proxy();
                             proxy.setCountry(country);
                             proxy.setIp(ip);
                             proxy.setPort(port);
-                            proxy.setArea(areaEle.text());
+                            proxy.setArea(area);
                             proxy.setCheckStatus(1);
                             proxy.setAnonymousType(getAnonymousType(anonymousEle));
                             proxy.setProtocolType(protocolEle.text());
-                            proxy.setSourceSite(ProxySite.ip3366.getProxySiteName());
+                            proxy.setSourceSite(ProxySite.nianshao.getProxySiteName());
                             proxy.setCheckTime(beginTime);
                             proxy.setCrawlTime(beginTime);
                             proxy.setValidTime(1);
@@ -82,7 +86,7 @@ public class Ip3366Extractor implements Extractor {
                             proxies.add(proxy);
                         }
                     } else {
-                        LOG.error("Ip3366Extractor can not extract anything..., please check.");
+                        LOG.error("nianshaoExtractor can not extract anything..., please check.");
                     }
                 }
             }
@@ -111,14 +115,16 @@ public class Ip3366Extractor implements Extractor {
         String text = element.text();
         if (StringUtils.isNoneBlank(text)) {
             switch (text) {
-                case "高匿代理IP":
+                case "高匿":
                     return ProxyAnonymousType.elite.getAnonymousType();
-                case "透明代理IP":
+                case "透明":
                     return ProxyAnonymousType.transparent.getAnonymousType();
-                case "普通代理IP":
+                case "普通":
                     return ProxyAnonymousType.anonymous.getAnonymousType();
+                case "混淆":
+                    return ProxyAnonymousType.distorting.getAnonymousType();
                 default:
-                    LOG.error("Can not verify the anonymousType of proxy from ip3366>>>:" + text);
+                    LOG.error("Can not verify the anonymousType of proxy from nianshao>>>:" + text);
             }
         }
         return text;

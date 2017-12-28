@@ -94,7 +94,7 @@ public class GoubanjiaExtractor implements Extractor {
                             proxies.add(proxy);
                         }
                     } else {
-                        LOG.warn("XicidailiExtractor can not extract anything..., please check.");
+                        LOG.error("XicidailiExtractor can not extract anything..., please check.");
                     }
                 }
             }
@@ -130,7 +130,7 @@ public class GoubanjiaExtractor implements Extractor {
                 case "透明":
                     return ProxyAnonymousType.transparent.getAnonymousType();
                 default:
-                    LOG.warn("Can not verify the anonymousType of proxy from goubanjia>>>:" + text);
+                    LOG.error("Can not verify the anonymousType of proxy from goubanjia>>>:" + text);
             }
         }
         return text;

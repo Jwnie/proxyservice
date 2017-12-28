@@ -58,10 +58,7 @@ public class Data5uDownLoader extends BaseDownLoader implements DownLoader {
                 }
             }
         } catch (Exception e) {
-            LOG.error("", e);
-        } finally {
-            //使用连接池无需关闭
-            //httpClientUtil.closeResources(null, closeableHttpClient);
+            LOG.warn("下载异常，任务url:" + task.getUrl(), e);
         }
         return htmlContentList;
     }

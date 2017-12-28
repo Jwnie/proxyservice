@@ -32,15 +32,15 @@ public class ScheduleJobs {
 
     @Scheduled(fixedRateString = "${com.meow.proxy.jobs.ScheduleJobs.proxyCrawl.period}")
     public void proxyCrawl() {
-        LOG.info("Start to crawl valid proxy..");
         TaskHolder taskHolder = TaskHolder.getInstance();
         List<Task> taskList = taskHolder.getTaskList();
         if (CollectionUtils.isNotEmpty(taskList)) {
+            LOG.info("Start to crawl valid proxy..");
             List<Proxy> proxies = proxyCrawl.crawl(taskList);
             if (CollectionUtils.isNotEmpty(proxies)) {
                 proxyService.saveProxies(proxies);
             }
-            LOG.info("Save success valid proxies: " + proxies.size());
+            LOG.info("Save valid proxies success， proxies size: " + proxies.size());
         }
     }
 

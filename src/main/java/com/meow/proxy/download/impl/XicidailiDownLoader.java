@@ -21,7 +21,7 @@ import java.util.List;
  *         date:2017/12/15
  *         email:jwnie@foxmail.com
  */
-@Component(value="xicidailiDownLoader")
+@Component(value = "xicidailiDownLoader")
 public class XicidailiDownLoader extends BaseDownLoader implements DownLoader {
     private final static Logger LOG = LoggerFactory.getLogger(XicidailiDownLoader.class);
 
@@ -63,12 +63,8 @@ public class XicidailiDownLoader extends BaseDownLoader implements DownLoader {
                 }
             }
         } catch (Exception e) {
-            LOG.error("", e);
-        } finally {
-            //使用连接池无需关闭
-            //httpClientUtil.closeResources(null, closeableHttpClient);
+            LOG.warn("下载异常，任务url:" + task.getUrl(), e);
         }
-
         return htmlContentList;
     }
 

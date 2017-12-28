@@ -3,7 +3,6 @@ package com.meow.proxy.request;
 import com.google.common.io.ByteStreams;
 import com.meow.proxy.base.Const;
 import org.apache.commons.compress.compressors.brotli.BrotliCompressorInputStream;
-import org.apache.commons.compress.compressors.brotli.BrotliUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
@@ -32,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -118,7 +116,7 @@ public class HttpClientUtil {
                         try {
                             isRedirect = super.isRedirected((org.apache.http.HttpRequest) request, response, context);
                         } catch (ProtocolException e) {
-                            LOG.error("", e);
+                            LOG.warn("", e);
                         }
                         if (!isRedirect) {
                             int responseCode = response.getStatusLine().getStatusCode();
@@ -195,7 +193,7 @@ public class HttpClientUtil {
             response = getHttpResponse(request, closeableHttpResponse);
             response.setUrl(url);
         } catch (Exception e) {
-            LOG.error("请求失败，url:" + url, e);
+            LOG.warn("请求失败，url:" + url, e);
         } finally {
             //使用连接池无需关闭
             //closeResources(closeableHttpResponse, null);
@@ -224,7 +222,7 @@ public class HttpClientUtil {
                 try {
                     httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
                 } catch (UnsupportedEncodingException e) {
-                    LOG.error("设置post请求参数失败:", e);
+                    LOG.warn("设置post请求参数失败:", e);
                 }
             }
         }
@@ -234,7 +232,7 @@ public class HttpClientUtil {
             response = getHttpResponse(request, closeableHttpResponse);
             response.setUrl(url);
         } catch (Exception e) {
-            LOG.error("请求失败，url:" + url, e);
+            LOG.warn("请求失败，url:" + url, e);
         } finally {
             //使用连接池无需关闭
             //closeResources(closeableHttpResponse, null);
@@ -271,7 +269,7 @@ public class HttpClientUtil {
                 byte[] bytes = ByteStreams.toByteArray(new GZIPInputStream(in));
                 String content = new String(bytes, charSet);
                 response.setContent(content);
-            }else if (header != null && Const.SYMBOL_BROTLI.equals(header.getValue().toLowerCase())) {
+            } else if (header != null && Const.SYMBOL_BROTLI.equals(header.getValue().toLowerCase())) {
                 byte[] bytes = ByteStreams.toByteArray(new BrotliCompressorInputStream(in));
                 String content = new String(bytes, charSet);
                 response.setContent(content);
@@ -281,7 +279,7 @@ public class HttpClientUtil {
                 response.setContent(content);
             }
         } catch (Exception e) {
-            LOG.error("读取响应内容异常: ", e);
+            LOG.warn("读取响应内容异常: ", e);
         } finally {
             //关闭流的作用就是将用完的连接释放，下次请求可以复用，如不使用in.close();而仅仅使用response.close();结果就是连接会被关闭，并且不能被复用，如此失去了采用连接池的意义。
             IOUtils.closeQuietly(in);
@@ -347,9 +345,9 @@ public class HttpClientUtil {
             // 设置每个连接的路由数
             clientConnectionManager.setDefaultMaxPerRoute(MAX_ROUTE_CONNECTIONS);
         } catch (NoSuchAlgorithmException e) {
-            LOG.error("", e);
+            LOG.warn("", e);
         } catch (KeyManagementException e) {
-            LOG.error("", e);
+            LOG.warn("", e);
         }
     }
 
@@ -395,7 +393,7 @@ public class HttpClientUtil {
                 closeableHttpClient.close();
             }
         } catch (IOException e) {
-            LOG.error("关闭closeableHttpResponse失败：", e);
+            LOG.warn("关闭closeableHttpResponse失败：", e);
         }
     }
 }

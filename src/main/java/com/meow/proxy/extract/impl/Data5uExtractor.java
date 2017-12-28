@@ -90,7 +90,7 @@ public class Data5uExtractor implements Extractor {
                             proxies.add(proxy);
                         }
                     } else {
-                        LOG.warn("data5uExtractor can not extract anything..., please check.");
+                        LOG.error("data5uExtractor can not extract anything..., please check.");
                     }
                 }
             }
@@ -126,7 +126,7 @@ public class Data5uExtractor implements Extractor {
                 case "透明":
                     return ProxyAnonymousType.transparent.getAnonymousType();
                 default:
-                    LOG.warn("Can not verify the anonymousType of proxy from data5u>>>:" + text);
+                    LOG.error("Can not verify the anonymousType of proxy from data5u>>>:" + text);
             }
         }
         return text;

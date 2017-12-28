@@ -24,6 +24,11 @@ public class TaskHolder {
         this.taskList.add(new Task("http://www.goubanjia.com/", true, 10, "goubanjiaDownLoader", "goubanjiaExtractor", ProxySite.goubanjia.getProxySiteName()));
         this.taskList.add(new Task("http://www.ip3366.net", true, 4, "ip3366DownLoader", "ip3366Extractor", ProxySite.ip3366.getProxySiteName()));
         this.taskList.add(new Task("http://www.data5u.com/", true, 10, "data5uDownLoader", "data5uExtractor", ProxySite.data5u.getProxySiteName()));
+        this.taskList.add(new Task("http://www.xdaili.cn/ipagent/freeip/getFreeIps", false, 1, "baseDownLoader", "xdailiExtractor", ProxySite.xdaili.getProxySiteName()));
+        this.taskList.add(new Task("http://www.nianshao.me/", true, 8, "nianshaoDownLoader", "nianshaoExtractor", ProxySite.nianshao.getProxySiteName()));
+        this.taskList.add(new Task("http://proxydb.net/", true, 6, "proxydbDownLoader", "proxydbExtractor", ProxySite.proxydb.getProxySiteName()));
+        this.taskList.add(new Task("http://www.kxdaili.com/dailiip.html", true, 8, "kxdailiDownLoader", "kxdailiExtractor", ProxySite.kxdaili.getProxySiteName()));
+        this.taskList.add(new Task("https://proxy.coderbusy.com/", true, 6, "coderbusyDownLoader", "coderbusyExtractor", ProxySite.coderbusy.getProxySiteName()));
 
         //境外的代理網站(部分url需要VPN)
         this.taskList.add(new Task("https://free-proxy-list.net", false, 1, "freeProxyListDownLoader", "freeProxyListExtractor", ProxySite.freeProxyList.getProxySiteName()));

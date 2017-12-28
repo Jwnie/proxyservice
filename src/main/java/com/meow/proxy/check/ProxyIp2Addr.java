@@ -44,7 +44,7 @@ public class ProxyIp2Addr {
                 }
             }
         } catch (Exception e) {
-            LOG.error("验证代理请求出错：", e);
+            LOG.warn("验证代理请求出错：", e);
         }
         return ipAddr;
     }

@@ -15,15 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * free-proxy-list.net 境外代理
+ * 年少代理：http://www.nianshao.me
  *
  * @author Alex
- *         date:2017/12/15
+ *         date:2017/12/28
  *         email:jwnie@foxmail.com
  */
-@Component(value = "freeProxyListDownLoader")
-public class FreeProxyListDownLoader extends BaseDownLoader implements DownLoader {
-    private final static Logger LOG = LoggerFactory.getLogger(FreeProxyListDownLoader.class);
+@Component(value = "nianshaoDownLoader")
+public class NianshaoDownLoader extends BaseDownLoader implements DownLoader {
+    private final static Logger LOG = LoggerFactory.getLogger(NianshaoDownLoader.class);
 
     /**
      * 包括翻页下载，返回List<String>
@@ -41,22 +41,22 @@ public class FreeProxyListDownLoader extends BaseDownLoader implements DownLoade
             if (task != null) {
                 String origUrl = task.getUrl();
                 Request request = new Request();
-                request.setCharSet("utf-8");
+                request.setCharSet("gbk");
                 setRequestParam(request);
                 int pageSize = 1;
                 if (task.isSubPageCrawl()) {
                     pageSize = task.getSubPageSize() + 1;
                 }
-                List<String> proxyUrlList = new ArrayList<>();
+                List<String> proxyUrlList = new ArrayList<>(pageSize * 2);
                 //代理url拼接
-                //uk代理
-//                proxyUrlList.add("https://free-proxy-list.net/uk-proxy.html");
-                //匿名代理
-//                proxyUrlList.add("https://free-proxy-list.net/anonymous-proxy.html");
-                //us代理
-                proxyUrlList.add("https://www.us-proxy.org/");
-                //socs代理
-                proxyUrlList.add("https://www.socks-proxy.net/");
+                for (int i = 1; i <= pageSize; i++) {
+                    //HTTP代理
+                    proxyUrlList.add("http://www.nianshao.me/?stype=1&page=" + i);
+                    //HTTPS代理
+                    proxyUrlList.add("http://www.nianshao.me/?stype=2&page=" + i);
+                    //随机端口代理
+                    proxyUrlList.add("http://www.nianshao.me/?stype=5&page=" + i);
+                }
                 if (CollectionUtils.isNotEmpty(proxyUrlList)) {
                     htmlContentList.addAll(downLoad(httpClientUtil, closeableHttpClient, request, proxyUrlList));
                 }

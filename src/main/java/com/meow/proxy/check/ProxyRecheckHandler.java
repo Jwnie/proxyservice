@@ -51,7 +51,7 @@ public class ProxyRecheckHandler {
                     queueIsEmpty = Boolean.TRUE;
                 }
             } catch (Exception e) {
-                LOG.error("", e);
+                LOG.warn("", e);
             }
         }
         proxyRecheckSender.process("完成！");
@@ -144,11 +144,12 @@ public class ProxyRecheckHandler {
 
                         proxies.add(proxy);
                         if (proxies.size() >= BATCH_UPDATE_SIEZ) {
+                            int size = proxies.size();
                             proxyService.updateProxies(proxies);
                             proxies.clear();
-                            LOG.info("批量更新代理成功！");
+                            LOG.info("批量检测代理成功！数量：" + size);
                         }
-                        LOG.info(this.threadName + " 校验代理结果>>> " + proxy.getIp() + ":" + proxy.getProtocolType() + ",是否有效: " + proxy.isValid());
+//                        LOG.info(this.threadName + " 校验代理结果>>> " + proxy.getIp() + ":" + proxy.getProtocolType() + ",是否有效: " + proxy.isValid());
                     }
                 }
                 if (CollectionUtils.isNotEmpty(proxies)) {
@@ -157,7 +158,7 @@ public class ProxyRecheckHandler {
                 }
                 Thread.sleep(10000);
             } catch (Exception e) {
-                LOG.error("", e);
+                LOG.warn("检验代理异常：", e);
             }
         }
 

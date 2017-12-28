@@ -41,7 +41,7 @@ public class Const {
      */
     public static String SYMBOL_ZIP = "zip";
     /**
-     * Brotli 算法压缩的内容
+     * 返回的内容为Brotli 算法压缩
      */
     public static String SYMBOL_BROTLI = "br";
 

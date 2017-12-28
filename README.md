@@ -6,6 +6,11 @@
 * 云代理: http://www.ip3366.net/
 * Free Proxy List: https://www.us-proxy.org/
 * 无忧代理: http://www.data5u.com/
+* 讯代理: http://www.xdaili.cn/freeproxy
+* 年少HTTP PROXY： http://www.nianshao.me/
+* proxydb: http://proxydb.net/
+* 开心代理: http://www.kxdaili.com/dailiip.html
+* coderbusy: https://proxy.coderbusy.com/
 
 
 ## 代理查询接口

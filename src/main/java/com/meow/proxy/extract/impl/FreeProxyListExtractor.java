@@ -87,7 +87,7 @@ public class FreeProxyListExtractor implements Extractor {
                             proxies.add(proxy);
                         }
                     } else {
-                        LOG.warn("freeProxyListExtractor can not extract anything..., please check.");
+                        LOG.error("freeProxyListExtractor can not extract anything..., please check.");
                     }
                 }
             }
@@ -123,7 +123,7 @@ public class FreeProxyListExtractor implements Extractor {
                 case "anonymous":
                     return ProxyAnonymousType.anonymous.getAnonymousType();
                 default:
-                    LOG.warn("Can not verify the anonymousType of proxy from free-Proxy-List>>>:" + text);
+                    LOG.error("Can not verify the anonymousType of proxy from free-Proxy-List>>>:" + text);
             }
         }
         return text;

@@ -39,7 +39,7 @@ public class ProxyCheck {
     private boolean isHadCheck(HttpHost proxy) {
         String value = new StringBuilder().append(proxy.getHostName()).append(":").append(proxy.getPort()).toString();
         if (simpleBloomFilter.contains(value)) {
-            LOG.info("已经检验过的代理: " + value);
+//            LOG.info("已经检验过的代理: " + value);
             return true;
         }
         return false;
@@ -78,13 +78,13 @@ public class ProxyCheck {
                     socket.connect(endpointSocketAddr, CHECKPROXY_TIMEOUT);
                     return true;
                 } catch (Exception e) {
-                    LOG.error("连接失败, remote: " + proxy.getHostName() + ":" + proxy.getPort());
+                    LOG.warn("连接失败, remote: " + proxy.getHostName() + ":" + proxy.getPort());
                 } finally {
                     if (socket != null) {
                         try {
                             socket.close();
                         } catch (IOException e) {
-                            LOG.error("Socket关闭异常：", e);
+                            LOG.warn("Socket关闭异常：", e);
                         }
                     }
                 }
@@ -121,14 +121,12 @@ public class ProxyCheck {
             }
             return false;
         } catch (Exception e) {
-            LOG.error("验证代理请求出错：", e);
+            LOG.warn("验证代理请求出错：", e);
             return false;
         } finally {
             if (deduplicate) {
                 addChecked(proxy);
             }
-            //使用连接池无需关闭
-            //httpClientUtil.closeResources(null,closeableHttpClient);
         }
     }
 

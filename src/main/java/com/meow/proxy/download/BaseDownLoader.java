@@ -26,7 +26,7 @@ import java.util.Random;
  *         email:jwnie@foxmail.com
  */
 @Component(value = "baseDownLoader")
-public abstract class BaseDownLoader implements DownLoader {
+public class BaseDownLoader implements DownLoader {
     private final static Logger LOG = LoggerFactory.getLogger(BaseDownLoader.class);
 
     @Autowired
@@ -55,10 +55,7 @@ public abstract class BaseDownLoader implements DownLoader {
                 }
             }
         } catch (Exception e) {
-            LOG.error("下载异常，任务url:" + task.getUrl(), e);
-        } finally {
-            //使用连接池无需关闭
-//            httpClientUtil.closeResources(null, closeableHttpClient);
+            LOG.warn("下载异常，任务url:" + task.getUrl(), e);
         }
         return htmlContentList;
     }
@@ -133,11 +130,11 @@ public abstract class BaseDownLoader implements DownLoader {
                     try {
                         Thread.sleep(3000L);
                     } catch (InterruptedException e1) {
-                        LOG.error("", e);
+                        LOG.warn("", e);
                     }
                 }
         } catch (Exception e) {
-            LOG.error("下载失败", e);
+            LOG.warn("下载失败", e);
         }
         return htmlContent;
     }
@@ -156,7 +153,7 @@ public abstract class BaseDownLoader implements DownLoader {
                     htmlContentList.add(htmlContent);
             }
         } catch (Exception e) {
-            LOG.error("下载异常:", e);
+            LOG.warn("下载异常:", e);
         } finally {
             closeResource(webDriver);
         }
