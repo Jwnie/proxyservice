@@ -4,6 +4,7 @@ import com.meow.proxy.entity.Proxy;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alex
@@ -24,5 +25,9 @@ public interface ProxyDao {
      * @return
      */
     List<Proxy> queryProxy(@Param("protocolType") String protocolType,@Param("isDemostic") String isDemostic,@Param("anonymousType") String anonymousType);
+
+    List<Map<String,String>> proxyStatisticBySite();
+
+    int queryValidProxyCount(@Param("protocolType") String protocolType,@Param("isDemostic") String isDemostic,@Param("anonymousType") String anonymousType);
 
 }

@@ -23,3 +23,8 @@
   
   示例数据:
   ![返回数据](/img/getproxy.png)
+  
+ * <b>http://localhost:8888/proxy/proxyStatistic</b><br>
+ 查询代理数量，按代理站点统计<br>
+    示例数据:
+    ![返回数据](/img/proxyStatistic.png)

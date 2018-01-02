@@ -140,6 +140,8 @@ public class ProxyRecheckHandler {
                         }
                         if (proxy.getValidTime() == null) {
                             proxy.setValidTime(1);
+                        } else {
+                            proxy.setValidTime(proxy.getValidTime() + 1);
                         }
 
                         proxies.add(proxy);

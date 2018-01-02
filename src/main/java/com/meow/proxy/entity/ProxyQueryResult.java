@@ -19,7 +19,11 @@ public class ProxyQueryResult implements Serializable {
     /**
      * 返回的代理数量
      */
-    private int proxyCount;
+    private int resProxyCount;
+    /**
+     * 代理总数
+     */
+    private int totalProxyCount;
     /**
      * 返回的代理详情
      */
@@ -34,12 +38,20 @@ public class ProxyQueryResult implements Serializable {
         this.status = status;
     }
 
-    public int getProxyCount() {
-        return proxyCount;
+    public int getResProxyCount() {
+        return resProxyCount;
     }
 
-    public void setProxyCount(int proxyCount) {
-        this.proxyCount = proxyCount;
+    public void setResProxyCount(int resProxyCount) {
+        this.resProxyCount = resProxyCount;
+    }
+
+    public int getTotalProxyCount() {
+        return totalProxyCount;
+    }
+
+    public void setTotalProxyCount(int totalProxyCount) {
+        this.totalProxyCount = totalProxyCount;
     }
 
     public List<Proxy> getProxies() {

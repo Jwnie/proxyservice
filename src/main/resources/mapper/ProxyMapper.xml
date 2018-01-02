@@ -29,13 +29,39 @@
         <if test="protocolType != null and protocolType != '' ">
             AND protocolType = #{protocolType, jdbcType=VARCHAR}
         </if>
-        <if test="isDemostic != null and isDemostic == 'true' ">
-            AND (country = 'china' OR country = '中国')
-        </if>
-        <if test="isDemostic != null and isDemostic == 'false' ">
-            AND country != 'china' AND country != '中国'
-        </if>
+        <choose>
+            <when test="isDemostic != null and isDemostic == 'true' ">
+                AND (country = 'china' OR country = '中国')
+            </when>
+            <when test="isDemostic != null and isDemostic == 'false' ">
+                AND country != 'china' AND country != '中国'
+            </when>
+        </choose>
         ORDER BY responseTime ASC,checkTime DESC LIMIT 100;
+    </select>
+    <!-- 统计有效代理数 -->
+    <select id="queryValidProxyCount" resultType="int">
+        SELECT count(*) FROM Cfg_Proxy WHERE valid = 1
+        <if test="anonymousType != null and anonymousType != '' ">
+            AND anonymousType = #{anonymousType, jdbcType=VARCHAR}
+        </if>
+        <if test="protocolType != null and protocolType != '' ">
+            AND protocolType = #{protocolType, jdbcType=VARCHAR}
+        </if>
+        <choose>
+            <when test="isDemostic != null and isDemostic == 'true' ">
+                AND (country = 'china' OR country = '中国')
+            </when>
+            <when test="isDemostic != null and isDemostic == 'false' ">
+                AND country != 'china' AND country != '中国'
+            </when>
+        </choose>
+        ORDER BY responseTime ASC,checkTime DESC LIMIT 100;
+    </select>
+
+    <!-- 查询代理数量，按站点统计 -->
+    <select id="proxyStatisticBySite" resultType="java.util.HashMap">
+      SELECT sourceSite, COUNT(*) AS 'validProxy' FROM Cfg_Proxy WHERE valid = 1 GROUP BY sourceSite;
     </select>
 
     <!-- update -->

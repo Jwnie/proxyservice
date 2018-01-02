@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alex
@@ -39,8 +40,16 @@ public class ProxyServiceImpl implements ProxyService {
      * @return
      */
     @Override
-    public List<Proxy> queryProxy(String protocolType,String isDemostic,String anonymousType) {
-        return proxyDao.queryProxy(protocolType,isDemostic,anonymousType);
+    public List<Proxy> queryProxy(String protocolType, String isDemostic, String anonymousType) {
+        return proxyDao.queryProxy(protocolType, isDemostic, anonymousType);
+    }
+
+    public List<Map<String, String>> proxyStatisticBySite() {
+        return proxyDao.proxyStatisticBySite();
+    }
+
+    public int queryValidProxyCount(String protocolType, String isDemostic, String anonymousType) {
+        return proxyDao.queryValidProxyCount(protocolType, isDemostic, anonymousType);
     }
 
 }
