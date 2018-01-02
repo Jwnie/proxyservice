@@ -22,7 +22,7 @@
   (3) protocolType: 可选参数，代理的协议类型，分为http、https、socks4、socks5和socks(未做socks4和socks5的细分，统称为socks)<br>
   
   示例数据:
-  ![返回数据](/img/getproxy.png)
+  ![返回数据](/img/getProxy.png)
   
  * <b>http://localhost:8888/proxy/proxyStatistic</b><br>
  查询代理数量，按代理站点统计<br>
